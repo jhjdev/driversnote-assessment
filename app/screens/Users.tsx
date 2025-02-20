@@ -22,6 +22,7 @@ const Users = () => {
     navigation.navigate('Beacons', {
       userId: String(user.id),
       getUser: () => user,
+      setDeliveryAddress, // Ensure this is passed
     });
   };
 

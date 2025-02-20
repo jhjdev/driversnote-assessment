@@ -1,12 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Button } from 'react-native-elements';
+import { fetchUserExperiment, fetchBeaconPrice } from '../services/api'; // Import the required functions
 import { NavigationProps, Order, User } from '../types/types';
 
 const Beacons = (props: NavigationProps<'Beacons'>) => {
   const [beaconCount, setBeaconCount] = useState<number>(1);
+  const [price, setPrice] = useState<number>(0); // State to hold the fetched price
   const user = props.route.params.getUser();
-  const price = 70; // Assume price is fetched correctly
+
+  useEffect(() => {
+    const fetchPriceData = async () => {
+      try {
+        const experimentData = await fetchUserExperiment(String(user.id)); // Convert user.id to string
+        const variant = experimentData.experiments.find(
+          exp => exp.experiment === 'beacon_price',
+        )?.variant;
+        if (variant) {
+          const fetchedPrice = await fetchBeaconPrice(user.country_id, variant); // Use country_id instead of country_code
+          setPrice(fetchedPrice);
+        } else {
+          throw new Error('No variant found for beacon_price experiment');
+        }
+      } catch (error) {
+        console.error('Error fetching price data:', error);
+      }
+    };
+
+    fetchPriceData();
+  }, [user.id, user.country_id]); // Use country_id
 
   const order: Order = {
     beacons: beaconCount,
@@ -53,15 +75,12 @@ const Beacons = (props: NavigationProps<'Beacons'>) => {
         onPress={() => {
           props.navigation.navigate('Delivery', {
             order,
-            getUser: () => user,
-            setDeliveryAddress: address => {
-              console.log('Delivery address set:', address);
-            },
+            getUser: props.route.params.getUser,
+            setDeliveryAddress: props.route.params.setDeliveryAddress,
             getOrder: () => order,
             getDeliveryAddress: () => order.deliveryAddress,
           });
         }}
-        containerStyle={styles.buttonContainer}
       />
     </View>
   );

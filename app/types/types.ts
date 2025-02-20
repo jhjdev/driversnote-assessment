@@ -56,6 +56,7 @@ export type RootStackParamList = {
   Beacons: {
     userId: string;
     getUser: () => User;
+    setDeliveryAddress: (address: DeliveryAddress) => void;
   };
   Delivery: {
     order: Order;
