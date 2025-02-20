@@ -40,7 +40,7 @@ yarn install
 Set Ruby version
 
 ~~~bash  
-open .ruby-version and set it to 3.3.4
+open .ruby-version > set ruby version to 3.3.4
 ~~~  
 
 Start the server  
@@ -49,16 +49,28 @@ Start the server
 yarn start
 ~~~  
 
-Run iOS 
+<b>Run iOS</b>
 
 ~~~bash  
-npx react-native run-ios
+cd ios > pod install
+~~~ 
+
+and then
+
+~~~bash  
+cd .. > npx react-native run-ios
 ~~~  
 
-Run Android
+<b>Run Android</b>
 
 ~~~bash  
-npx react-native run-android
+cd android > ./gradlew clean
+~~~  
+
+and then
+
+~~~bash  
+cd .. > npx react-native run-android
 ~~~  
 
 ## Lessons Learned  
