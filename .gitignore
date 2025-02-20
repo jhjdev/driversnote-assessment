@@ -32,6 +32,10 @@ local.properties
 *.hprof
 .cxx/
 
+# VS Code
+#
+.vscode/
+
 # node.js
 #
 node_modules/
@@ -62,3 +66,20 @@ buck-out/
 # Ruby / CocoaPods
 /ios/Pods/
 /vendor/bundle/
+/vendor/cache/
+/vendor/gems/
+/vendor/ruby/
+.bundle/
+.bundleconfig
+.bundlelock
+.bundler/
+.bundler/config
+.bundler/config.lock
+.bundler/gems/
+.bundler/ruby/
+.bundler/version
+Gemfile.lock
+vendor/bundle/
+vendor/cache/
+vendor/gems/
+vendor/ruby/
