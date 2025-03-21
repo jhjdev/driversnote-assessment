@@ -4,15 +4,17 @@ import { Button } from 'react-native-elements';
 import * as yup from 'yup';
 import { Formik } from 'formik';
 import { NavigationProps, User, DeliveryAddress } from '../types/types';
+import { useUserContext } from '../contexts/UserContext';
 
 const Delivery = (props: NavigationProps<'Delivery'>) => {
-  const user = props.route.params.getUser();
+  const { getUser, setDeliveryAddress } = useUserContext();
+  const user = getUser(props.route.params.userId);
   const [postalCode, setPostalCode] = useState<string | number>(
     user?.postal_code || '',
   );
 
   useEffect(() => {
-    console.log('Delivery screen props:', props);
+    // Effect initialization
   }, [props]);
 
   return (
@@ -46,14 +48,10 @@ const Delivery = (props: NavigationProps<'Delivery'>) => {
               ...values,
               address2: values.address2 || undefined, // Ensure address2 is string | undefined
             };
-            props.route.params.setDeliveryAddress(deliveryAddress);
+            setDeliveryAddress(deliveryAddress);
             props.navigation.navigate('OrderOverview', {
               order: props.route.params.order,
-              getOrder:
-                props.route.params.getOrder || (() => props.route.params.order),
-              getDeliveryAddress:
-                props.route.params.getDeliveryAddress ||
-                (() => deliveryAddress),
+              deliveryAddress
             });
           }}
           validationSchema={yup.object().shape({
