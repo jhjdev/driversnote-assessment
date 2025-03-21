@@ -2,7 +2,7 @@ import 'react-native-gesture-handler';
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import Users from './screens/Users';
+import Users from './screens/UsersList';
 import Beacons from './screens/Beacons';
 import Delivery from './screens/Delivery';
 import OrderOverview from './screens/OrderOverview';
