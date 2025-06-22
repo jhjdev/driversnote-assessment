@@ -1,82 +1,103 @@
-# Driversnote Assessment
-A React Native Assessment for Driversnote
+# Driversnote Assessment - React Native App
 
-## The task: Extend and improve our MVP
-We have built a very quick MVP with a flow to buy a single iBeacon and make an order to get it delivered. This app is attached and has the necessary boilerplate for typescript, navigation, jest tests, etc.
+## Project Status
 
-The app starts with selecting a customer from a list. This is obviously not the way we’d do it in a real-life scenario, but it’s done this way to easily test the flow with users from different countries and with different levels of (in)complete user-info.
-The flow currently has three steps: Selecting an iBeacon, picking delivery address and showing an order confirmation. 
-Here is what we would like you to do:
-1.	Make it possible to buy more than one iBeacon.
-a.	You need to update the UI and purchase logic to let the user specify the nr of iBeacons to buy.
-b.	When a user buys more than 5 iBeacons, they get a 15% discount.
-2.	Fetch the price of the iBeacon dynamically. Imagine that we are running an A/B test to expose users to different prices depending on their country. To get the correct price, two pieces of data must be queried:
-a.	The "user_experiments" endpoint reveals which variant of the "beacon_price” experiment the user has been assigned.
-https://6548fde7dd8ebcd4ab240284.mockapi.io/user_experiments/{user_id} 
-b.	The "beacon_price" endpoint reveals the price of an iBeacon for each country / experiment variant combination.
-https://633ab21ae02b9b64c6151a44.mockapi.io/api/v2/BeaconPrice
-3.	Improve the architecture and code quality of the MVP app.
+### ⚠️ Important Notice ⚠️
 
+**The original app is currently broken** due to its reliance on React Native version 0.71 and the old architecture, which has proven unstable in modern development environments. When this assessment was created, the company that asked for it insisted on using this outdated version, which has led to compatibility issues with current development tools and libraries.
 
-## Run Locally  
-Clone the project  
+### 🚀 New App Under Construction
 
-~~~bash  
-  git clone https://link-to-project
-~~~
+We are actively developing a new version of the application with:
 
-Go to the project directory  
+- React Native 0.80 with Expo bare workflow
+- Modern Redux Toolkit for state management
+- RTK Query for efficient API calls
+- Improved TypeScript implementation
+- Enhanced error handling and performance optimizations
 
-~~~bash  
-  cd my-project
-~~~
+The new app can be found in the `rn080-bare` directory. Please refer to the [MIGRATION_REPORT.md](./MIGRATION_REPORT.md) for details on the migration progress and improvements.
 
-Install dependencies  
+## Original Assessment Task
 
-~~~bash  
+We built an MVP with a flow to buy a single iBeacon and make an order to get it delivered. The app starts with selecting a customer from a list and follows three steps: Selecting an iBeacon, picking a delivery address, and showing an order confirmation.
+
+### Requirements:
+
+1. **Multiple iBeacons Purchase**
+
+   - Update UI and purchase logic to let users specify the number of iBeacons
+   - Apply a 15% discount when a user buys more than 5 iBeacons
+
+2. **Dynamic Pricing (A/B Testing)**
+
+   - Fetch price data from two endpoints:
+     - User experiments: `https://6548fde7dd8ebcd4ab240284.mockapi.io/user_experiments/{user_id}`
+     - Beacon prices: `https://633ab21ae02b9b64c6151a44.mockapi.io/api/v2/BeaconPrice`
+
+3. **Improve Architecture and Code Quality**
+   - This has been addressed in our migration to Redux Toolkit
+
+## Running the New App
+
+### Prerequisites
+
+- Node.js 16+
+- Yarn or npm
+- iOS: XCode 14+ and CocoaPods
+- Android: Android Studio with SDK 31+
+
+### Installation
+
+```bash
+# Navigate to the new app directory
+cd rn080-bare
+
+# Install dependencies
 yarn install
-~~~
 
-Set Ruby version
+# Install iOS dependencies
+cd ios && pod install && cd ..
+```
 
-~~~bash  
-open .ruby-version > set ruby version to 3.3.4
-~~~  
+### Running the App
 
-Start the server  
-
-~~~bash  
+```bash
+# Start Metro bundler
 yarn start
-~~~  
 
-<b>Run iOS</b>
+# Run on iOS
+yarn ios
 
-~~~bash  
-cd ios > pod install
-~~~ 
+# Run on Android
+yarn android
+```
 
-and then
+## Development Status
 
-~~~bash  
-cd .. > npx react-native run-ios
-~~~  
+The new app is currently under active development. We have successfully:
 
-<b>Run Android</b>
+- ✅ Migrated the core architecture to Redux Toolkit
+- ✅ Implemented RTK Query for API calls
+- ✅ Migrated all screens with improved functionality
+- ✅ Enhanced TypeScript typing throughout the codebase
 
-~~~bash  
-cd android > ./gradlew clean
-~~~  
+Future work includes:
 
-and then
+- ⬜ Comprehensive testing
+- ⬜ Enhanced UI/UX
+- ⬜ Performance optimizations
+- ⬜ Additional features
 
-~~~bash  
-cd .. > npx react-native run-android
-~~~  
+## Troubleshooting
 
-## Lessons Learned  
-If you run into build issues, I recommend using the WRAP terminal
-for iOS. 
-It can be downloaded here https://www.warp.dev/
+If you encounter any issues with the new app, please:
 
-Enable the Sonnet AI to help you resolve any build issues with 
-Pods or Gradle, as well as Ruby and Java issues. 
+1. Ensure you have the correct Node.js version
+2. Try clearing the Metro bundler cache: `yarn start --reset-cache`
+3. For iOS issues: `cd ios && pod install --repo-update`
+4. For Android issues: `cd android && ./gradlew clean`
+
+## Contributing
+
+Please refer to the [MIGRATION_PLAN.md](./MIGRATION_PLAN.md) and [MIGRATION_REPORT.md](./MIGRATION_REPORT.md) for guidance on the project structure and ongoing migration efforts.
