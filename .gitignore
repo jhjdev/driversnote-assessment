@@ -84,4 +84,12 @@ vendor/cache/
 vendor/gems/
 vendor/ruby/
 
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env*.local
+
 .fake
