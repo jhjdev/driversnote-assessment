@@ -27,7 +27,7 @@ async function connectToMongoDB() {
     client = new MongoClient(uri);
     await client.connect();
     db = client.db(dbName);
-    
+
     console.log(`✅ Connected to MongoDB database: ${dbName}`);
     return db;
   } catch (error) {
@@ -52,11 +52,11 @@ app.get('/api/users/:id', async (req, res) => {
   try {
     const userId = parseInt(req.params.id);
     const user = await db.collection('users').findOne({ id: userId });
-    
+
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
-    
+
     console.log(`👤 Fetched user: ${user.full_name}`);
     res.json(user);
   } catch (error) {
@@ -68,11 +68,13 @@ app.get('/api/users/:id', async (req, res) => {
 app.post('/api/users', async (req, res) => {
   try {
     const userData = req.body;
-    
+
     // Generate new ID
-    const maxUser = await db.collection('users').findOne({}, { sort: { id: -1 } });
+    const maxUser = await db
+      .collection('users')
+      .findOne({}, { sort: { id: -1 } });
     userData.id = (maxUser?.id || 0) + 1;
-    
+
     const result = await db.collection('users').insertOne(userData);
     console.log(`➕ Created new user: ${userData.full_name}`);
     res.status(201).json(userData);
@@ -86,16 +88,15 @@ app.put('/api/users/:id', async (req, res) => {
   try {
     const userId = parseInt(req.params.id);
     const userData = req.body;
-    
-    const result = await db.collection('users').updateOne(
-      { id: userId },
-      { $set: userData }
-    );
-    
+
+    const result = await db
+      .collection('users')
+      .updateOne({ id: userId }, { $set: userData });
+
     if (result.matchedCount === 0) {
       return res.status(404).json({ error: 'User not found' });
     }
-    
+
     const updatedUser = await db.collection('users').findOne({ id: userId });
     console.log(`✏️ Updated user: ${updatedUser.full_name}`);
     res.json(updatedUser);
@@ -108,13 +109,13 @@ app.put('/api/users/:id', async (req, res) => {
 app.delete('/api/users/:id', async (req, res) => {
   try {
     const userId = parseInt(req.params.id);
-    
+
     const result = await db.collection('users').deleteOne({ id: userId });
-    
+
     if (result.deletedCount === 0) {
       return res.status(404).json({ error: 'User not found' });
     }
-    
+
     console.log(`🗑️ Deleted user with ID: ${userId}`);
     res.json({ success: true });
   } catch (error) {
@@ -126,17 +127,20 @@ app.delete('/api/users/:id', async (req, res) => {
 app.post('/api/users/initialize', async (req, res) => {
   try {
     const { users } = req.body;
-    
+
     // Check if users collection is empty
     const existingCount = await db.collection('users').countDocuments();
-    
+
     if (existingCount === 0) {
       await db.collection('users').insertMany(users);
       console.log(`🚀 Initialized ${users.length} users in MongoDB`);
       res.json({ success: true, message: `Initialized ${users.length} users` });
     } else {
       console.log(`📊 Users collection already has ${existingCount} documents`);
-      res.json({ success: true, message: `Collection already has ${existingCount} users` });
+      res.json({
+        success: true,
+        message: `Collection already has ${existingCount} users`,
+      });
     }
   } catch (error) {
     console.error('Error initializing users:', error);
@@ -146,10 +150,10 @@ app.post('/api/users/initialize', async (req, res) => {
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
+  res.json({
+    status: 'ok',
     timestamp: new Date().toISOString(),
-    database: db ? 'connected' : 'disconnected'
+    database: db ? 'connected' : 'disconnected',
   });
 });
 
@@ -157,7 +161,7 @@ app.get('/api/health', (req, res) => {
 async function startServer() {
   try {
     await connectToMongoDB();
-    
+
     app.listen(PORT, () => {
       console.log(`🚀 Server running on http://localhost:${PORT}`);
       console.log(`🏥 Health check: http://localhost:${PORT}/api/health`);

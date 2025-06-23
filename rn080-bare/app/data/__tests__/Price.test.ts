@@ -3,7 +3,7 @@ import {
   calculatePrice,
   formatPrice,
   MIN_BEACONS_FOR_DISCOUNT,
-  DISCOUNT_PERCENT
+  DISCOUNT_PERCENT,
 } from '../Price';
 
 describe('getTotalPrice', () => {
@@ -47,7 +47,7 @@ describe('calculatePrice', () => {
       basePrice: 300,
       discount: 0,
       totalPrice: 300,
-      discountApplied: false
+      discountApplied: false,
     });
   });
 
@@ -57,7 +57,7 @@ describe('calculatePrice', () => {
       basePrice: 500,
       discount: 75,
       totalPrice: 425,
-      discountApplied: true
+      discountApplied: true,
     });
   });
 
@@ -67,7 +67,7 @@ describe('calculatePrice', () => {
       basePrice: 0,
       discount: 0,
       totalPrice: 0,
-      discountApplied: false
+      discountApplied: false,
     });
   });
 });
