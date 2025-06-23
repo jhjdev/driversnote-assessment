@@ -1,16 +1,22 @@
 module.exports = {
-  presets: ['module:@react-native/babel-preset'],
-  plugins: [
+  presets: [
     [
-      'module:react-native-dotenv',
+      'module:@react-native/babel-preset',
       {
-        moduleName: '@env',
-        path: '.env',
-        blacklist: null,
-        whitelist: null,
-        safe: false,
-        allowUndefined: true,
-      },
-    ],
+        // Disable automatic babel runtime imports that cause require issues
+        useTransformReactJSXExperimental: false,
+        enableBabelRuntime: false,
+      }
+    ]
+  ],
+  plugins: [
+    // Disable transform-runtime plugin to prevent require() calls
+    // ['@babel/plugin-transform-runtime', { helpers: false }]
+    ['module:react-native-dotenv', {
+      moduleName: '@env',
+      path: '.env',
+      safe: false,
+      allowUndefined: true
+    }]
   ],
 };

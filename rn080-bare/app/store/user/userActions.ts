@@ -1,6 +1,5 @@
 import { User } from '../../types/types';
 import { fetchMiddleware } from '../../services/fetchMiddleware';
-import { AppDispatch } from '../store';
 import {
   FETCH_USERS_REQUEST,
   FETCH_USERS_SUCCESS,
@@ -42,7 +41,7 @@ const selectUserFailure = (error: string): UserActionTypes => ({
 });
 
 // Thunk for fetching users
-export const fetchUsers = () => async (dispatch: AppDispatch) => {
+export const fetchUsers = () => async (dispatch: any) => {
   dispatch(fetchUsersRequest());
   try {
     // Initialize users collection if needed (similar to UserContext)
@@ -56,7 +55,7 @@ export const fetchUsers = () => async (dispatch: AppDispatch) => {
 };
 
 // Thunk for selecting a user by ID
-export const selectUser = (userId: number) => async (dispatch: AppDispatch) => {
+export const selectUser = (userId: number) => async (dispatch: any) => {
   dispatch(selectUserRequest());
   try {
     const user = await fetchMiddleware.fetchUserById(userId);

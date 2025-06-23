@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { User, ExperimentData, BeaconPrice } from '../../types/types';
 import { isPriceVariant, variantToPriceKey } from '../api';
+import { fetchMiddleware } from '../fetchMiddleware';
 
 // Define our API service using RTK Query
 export const apiSlice = createApi({
@@ -147,8 +148,6 @@ export const apiSlice = createApi({
   }),
 });
 
-// Import the fetchMiddleware for use in queryFn
-import { fetchMiddleware } from '../fetchMiddleware';
 
 // Export generated hooks
 export const {

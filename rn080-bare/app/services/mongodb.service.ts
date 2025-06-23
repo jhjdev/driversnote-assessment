@@ -1,57 +1,122 @@
-import { MongoClient, Db } from 'mongodb';
 import { MONGODB_URI, MONGODB_DB_NAME } from '@env';
+import { User } from '../types/types';
 
+// MongoDB Data API service for hosted database access
 class MongoDBService {
-  private client: MongoClient | null = null;
-  private db: Db | null = null;
+  private apiEndpoint: string;
+  private appId: string;
+  private dataSource: string;
+  private database: string;
+  private apiKey: string;
+
+  constructor() {
+    // Parse MongoDB connection for Data API
+    const uri = MONGODB_URI || '';
+    const dbName = MONGODB_DB_NAME || 'driversnote';
+    
+    // Extract cluster info from URI
+    const clusterMatch = uri.match(/@([^.]+)/);
+    const clusterName = clusterMatch ? clusterMatch[1] : 'driversnote';
+    
+    // MongoDB Data API configuration
+    // For now, we'll use a simple HTTP API approach
+    this.appId = 'data-endpoint';
+    this.apiEndpoint = 'http://localhost:4000/api'; // Your backend API
+    this.dataSource = clusterName;
+    this.database = dbName;
+    this.apiKey = '';
+    
+    console.log('MongoDB Service initialized with:', {
+      database: this.database,
+      dataSource: this.dataSource,
+      endpoint: this.apiEndpoint,
+      hasUri: !!MONGODB_URI
+    });
+  }
 
   /**
-   * Connect to MongoDB
+   * Make HTTP request to backend API
    */
-  async connect(): Promise<void> {
+  private async makeRequest<T>(endpoint: string, options?: RequestInit): Promise<T> {
     try {
-      if (!this.client) {
-        this.client = new MongoClient(MONGODB_URI);
-        await this.client.connect();
-        this.db = this.client.db(MONGODB_DB_NAME);
-        console.log('Connected to MongoDB successfully');
+      console.log(`Making request to: ${this.apiEndpoint}${endpoint}`);
+      const response = await fetch(`${this.apiEndpoint}${endpoint}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          ...options?.headers,
+        },
+        ...options,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+
+      return await response.json();
     } catch (error) {
-      console.error('MongoDB connection error:', error);
+      console.error('API request error:', error);
       throw error;
     }
   }
 
   /**
-   * Get database instance
+   * Get all users from MongoDB
    */
-  getDb(): Db {
-    if (!this.db) {
-      throw new Error('Database not connected. Call connect() first.');
-    }
-    return this.db;
+  async getUsers(): Promise<User[]> {
+    return this.makeRequest<User[]>('/users');
   }
 
   /**
-   * Close MongoDB connection
+   * Get single user by ID
    */
-  async close(): Promise<void> {
-    if (this.client) {
-      await this.client.close();
-      this.client = null;
-      this.db = null;
-      console.log('MongoDB connection closed');
+  async getUserById(id: number): Promise<User | null> {
+    try {
+      return await this.makeRequest<User>(`/users/${id}`);
+    } catch (error) {
+      console.warn(`User ${id} not found:`, error);
+      return null;
     }
   }
 
   /**
-   * Get collection
-   * @param collectionName Name of the collection
+   * Create new user
    */
-  collection(collectionName: string) {
-    return this.getDb().collection(collectionName);
+  async createUser(userData: Omit<User, 'id'>): Promise<User> {
+    return this.makeRequest<User>('/users', {
+      method: 'POST',
+      body: JSON.stringify(userData),
+    });
+  }
+
+  /**
+   * Update user
+   */
+  async updateUser(id: number, userData: Partial<User>): Promise<User> {
+    return this.makeRequest<User>(`/users/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(userData),
+    });
+  }
+
+  /**
+   * Delete user
+   */
+  async deleteUser(id: number): Promise<{ success: boolean }> {
+    return this.makeRequest<{ success: boolean }>(`/users/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  /**
+   * Initialize users collection if needed
+   */
+  async initializeUsers(users: User[]): Promise<{ success: boolean }> {
+    return this.makeRequest<{ success: boolean }>('/users/initialize', {
+      method: 'POST',
+      body: JSON.stringify({ users }),
+    });
   }
 }
 
 // Export singleton instance
-export const mongoDBService = new MongoDBService();
+export const mongodbService = new MongoDBService();

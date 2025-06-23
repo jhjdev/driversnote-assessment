@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../../types/types';
-import { AppDispatch } from '../store';
 import { fetchMiddleware } from '../../services/fetchMiddleware';
 
 // Define the state shape
@@ -65,7 +64,7 @@ export const {
 } = userSlice.actions;
 
 // Thunk for fetching users
-export const fetchUsers = () => async (dispatch: AppDispatch) => {
+export const fetchUsers = () => async (dispatch: any) => {
   dispatch(fetchUsersRequest());
   try {
     await fetchMiddleware.initializeUsers();
@@ -77,7 +76,7 @@ export const fetchUsers = () => async (dispatch: AppDispatch) => {
 };
 
 // Thunk for selecting a user
-export const selectUser = (userId: number) => async (dispatch: AppDispatch) => {
+export const selectUser = (userId: number) => async (dispatch: any) => {
   dispatch(selectUserRequest());
   try {
     const user = await fetchMiddleware.fetchUserById(userId);

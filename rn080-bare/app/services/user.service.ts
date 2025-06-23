@@ -1,4 +1,4 @@
-import { mongoDBService } from '../services/mongodb.service';
+import { apiService } from '../services/mongodb.service';
 import { User } from '../types/types';
 
 export class UserService {
@@ -9,15 +9,12 @@ export class UserService {
    */
   async initializeUsers(): Promise<void> {
     try {
-      await mongoDBService.connect();
-      const collection = mongoDBService.collection(this.COLLECTION_NAME);
-
-      // Check if users collection is empty
-      const count = await collection.countDocuments();
-      if (count === 0) {
-        // Insert sample users
-        await collection.insertMany(SAMPLE_USERS);
-        console.log('Sample users initialized in MongoDB');
+      // Check if users exist via API
+      const users = await this.getAllUsers();
+      if (users.length === 0) {
+        // Initialize with sample users via API
+        await apiService.initializeCollection(this.COLLECTION_NAME, SAMPLE_USERS);
+        console.log('Sample users initialized via API');
       }
     } catch (error) {
       console.error('Error initializing users:', error);
@@ -30,9 +27,7 @@ export class UserService {
    */
   async getAllUsers(): Promise<User[]> {
     try {
-      await mongoDBService.connect();
-      const collection = mongoDBService.collection(this.COLLECTION_NAME);
-      return await collection.find<User>({}).toArray();
+      return await apiService.getCollection<User>(this.COLLECTION_NAME);
     } catch (error) {
       console.error('Error getting users:', error);
       throw error;
@@ -44,9 +39,7 @@ export class UserService {
    */
   async getUserById(id: number): Promise<User | null> {
     try {
-      await mongoDBService.connect();
-      const collection = mongoDBService.collection(this.COLLECTION_NAME);
-      return await collection.findOne<User>({ id });
+      return await apiService.getDocumentById<User>(this.COLLECTION_NAME, id);
     } catch (error) {
       console.error(`Error getting user with ID ${id}:`, error);
       throw error;
@@ -58,20 +51,7 @@ export class UserService {
    */
   async createUser(user: Omit<User, 'id'>): Promise<User> {
     try {
-      await mongoDBService.connect();
-      const collection = mongoDBService.collection(this.COLLECTION_NAME);
-
-      // Get the next ID
-      const maxIdDoc = await collection
-        .find()
-        .sort({ id: -1 })
-        .limit(1)
-        .toArray();
-      const nextId = maxIdDoc.length > 0 ? maxIdDoc[0].id + 1 : 1;
-
-      const newUser: User = { ...user, id: nextId };
-      await collection.insertOne(newUser);
-      return newUser;
+      return await apiService.createDocument<User>(this.COLLECTION_NAME, user);
     } catch (error) {
       console.error('Error creating user:', error);
       throw error;
@@ -83,11 +63,8 @@ export class UserService {
    */
   async updateUser(id: number, userData: Partial<User>): Promise<User | null> {
     try {
-      await mongoDBService.connect();
-      const collection = mongoDBService.collection(this.COLLECTION_NAME);
-
-      await collection.updateOne({ id }, { $set: userData });
-      return this.getUserById(id);
+      const updatedUser = await apiService.updateDocument<User>(this.COLLECTION_NAME, id, userData);
+      return updatedUser;
     } catch (error) {
       console.error(`Error updating user with ID ${id}:`, error);
       throw error;
@@ -99,11 +76,8 @@ export class UserService {
    */
   async deleteUser(id: number): Promise<boolean> {
     try {
-      await mongoDBService.connect();
-      const collection = mongoDBService.collection(this.COLLECTION_NAME);
-
-      const result = await collection.deleteOne({ id });
-      return result.deletedCount > 0;
+      const result = await apiService.deleteDocument(this.COLLECTION_NAME, id);
+      return result.success;
     } catch (error) {
       console.error(`Error deleting user with ID ${id}:`, error);
       throw error;

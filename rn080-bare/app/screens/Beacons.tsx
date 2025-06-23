@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { Button } from 'react-native-elements';
 import { useNavigation, RouteProp } from '@react-navigation/native';
 import { RootStackParamList, Order } from '../types/types';
 import { getTotalPrice } from '../data/Price';
@@ -74,11 +73,12 @@ const Beacons: React.FC<BeaconsScreenProps> = ({ route }) => {
         <Text style={styles.error}>
           {error instanceof Error ? error.message : 'An error occurred while fetching data'}
         </Text>
-        <Button
-          title="Go Back"
+        <TouchableOpacity
           onPress={() => navigation.goBack()}
-          containerStyle={styles.buttonContainer}
-        />
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>Go Back</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -113,16 +113,17 @@ const Beacons: React.FC<BeaconsScreenProps> = ({ route }) => {
         <Text style={styles.totalText}>Total: ${totalPrice.toFixed(2)}</Text>
       </View>
 
-      <Button
-        title="Buy"
+      <TouchableOpacity
         onPress={() =>
           navigation.navigate('Delivery', {
             order,
             userId,
           })
         }
-        containerStyle={styles.buttonContainer}
-      />
+        style={styles.button}
+      >
+        <Text style={styles.buttonText}>Buy</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -205,6 +206,20 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     width: '100%',
+  },
+  button: {
+    backgroundColor: '#2196F3',
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

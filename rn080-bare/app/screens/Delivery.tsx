@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { TextInput, View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
-import { Button } from 'react-native-elements';
+import { TextInput, View, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
 import * as yup from 'yup';
 import { Formik } from 'formik';
 import { RouteProp, useNavigation } from '@react-navigation/native';
@@ -41,11 +40,12 @@ const Delivery: React.FC<DeliveryScreenProps> = ({ route }) => {
         <Text style={styles.errorText}>
           {error instanceof Error ? error.message : 'An error occurred while fetching user data'}
         </Text>
-        <Button
-          title="Go Back"
+        <TouchableOpacity
           onPress={() => navigation.goBack()}
-          containerStyle={{ marginTop: 20 }}
-        />
+          style={[styles.button, { marginTop: 20 }]}
+        >
+          <Text style={styles.buttonText}>Go Back</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -54,11 +54,12 @@ const Delivery: React.FC<DeliveryScreenProps> = ({ route }) => {
     return (
       <View style={styles.errorContainer}>
         <Text style={styles.errorText}>User not found</Text>
-        <Button
-          title="Go Back"
+        <TouchableOpacity
           onPress={() => navigation.goBack()}
-          containerStyle={{ marginTop: 20 }}
-        />
+          style={[styles.button, { marginTop: 20 }]}
+        >
+          <Text style={styles.buttonText}>Go Back</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -171,12 +172,15 @@ const Delivery: React.FC<DeliveryScreenProps> = ({ route }) => {
               <Text style={styles.errorText}>{errors.country}</Text>
             )}
             
-            <Button
-              title="Continue to Order Overview"
+            <TouchableOpacity
               disabled={!isValid}
               onPress={handleSubmit}
-              containerStyle={styles.buttonContainer}
-            />
+              style={[styles.button, !isValid && styles.disabledButton]}
+            >
+              <Text style={[styles.buttonText, !isValid && styles.disabledButtonText]}>
+                Continue to Order Overview
+              </Text>
+            </TouchableOpacity>
           </View>
         )}
       </Formik>
@@ -236,6 +240,27 @@ const styles = StyleSheet.create({
   buttonContainer: {
     width: '100%',
     marginTop: 20,
+  },
+  button: {
+    backgroundColor: '#2196F3',
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    marginTop: 20,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  disabledButton: {
+    backgroundColor: '#cccccc',
+  },
+  disabledButtonText: {
+    color: '#666666',
   },
 });
 

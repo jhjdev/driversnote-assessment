@@ -9,10 +9,8 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useGetUsersQuery } from '../services/api/apiSlice';
-import { selectUsersSortedByName } from '../store/user/userSelectors';
-import { useSelector } from 'react-redux';
-import { RootState } from '../store/rootReducer';
 import { UsersScreenNavigationProp } from '../types/types';
+import { useMemo } from 'react';
 
 export const UsersScreen: React.FC = () => {
   const navigation = useNavigation<UsersScreenNavigationProp>();
@@ -20,10 +18,15 @@ export const UsersScreen: React.FC = () => {
   // Use RTK Query hook to fetch users
   const { data: users, isLoading, error, refetch } = useGetUsersQuery();
 
-  // Use selector to get sorted users (if data is available)
-  const sortedUsers = useSelector((state: RootState) =>
-    users ? selectUsersSortedByName(state) : [],
-  );
+  // Memoized sorted users to prevent unnecessary re-renders
+  const sortedUsers = useMemo(() => {
+    if (!users) return [];
+    return [...users].sort((a, b) => {
+      const nameA = a.full_name || '';
+      const nameB = b.full_name || '';
+      return nameA.localeCompare(nameB);
+    });
+  }, [users]);
 
   const handleUserSelect = (userId: string) => {
     navigation.navigate('Beacons', { userId });

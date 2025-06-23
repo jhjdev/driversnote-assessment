@@ -1,6 +1,5 @@
 import React from 'react';
-import { Alert, View, StyleSheet, ScrollView } from 'react-native';
-import { Text, Button } from 'react-native-elements';
+import { Alert, View, StyleSheet, ScrollView, Text, TouchableOpacity } from 'react-native';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../types/types';
 
@@ -29,7 +28,7 @@ const OrderOverview: React.FC<OrderOverviewScreenProps> = ({ route }) => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.contentContainer}>
-        <Text h2 style={styles.title}>
+        <Text style={styles.title}>
           Order Overview
         </Text>
 
@@ -68,13 +67,12 @@ const OrderOverview: React.FC<OrderOverviewScreenProps> = ({ route }) => {
           <Text style={styles.addressText}>{deliveryAddress.country}</Text>
         </View>
 
-        <Button
-          title="Confirm and send the order"
-          type="solid"
-          buttonStyle={styles.confirmButton}
-          containerStyle={styles.buttonContainer}
+        <TouchableOpacity
+          style={[styles.confirmButton, styles.buttonContainer]}
           onPress={handleConfirmOrder}
-        />
+        >
+          <Text style={styles.buttonText}>Confirm and send the order</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -90,6 +88,8 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   title: {
+    fontSize: 24,
+    fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
     color: '#2c3e50',
@@ -166,6 +166,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#27ae60',
     borderRadius: 8,
     paddingVertical: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
