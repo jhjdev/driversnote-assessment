@@ -2,7 +2,6 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 
 // Define User type to match the structure in the JSON file
-
 export interface Experiment {
   experiment: string;
   variant: string;
@@ -24,14 +23,27 @@ export interface BeaconPrice {
 
 export interface User {
   id: number;
-  full_name: string | null;
-  address1: string | null;
-  address2: string | null;
-  postal_code: number | string | null;
-  city: string | null;
-  country_name: string;
-  country_id: string;
-  organisation_id: number | null;
+  full_name: string;
+  tag: string;
+  discount?: number; // Discount percentage (0-100)
+  address1?: string | null;
+  address2?: string | null;
+  postal_code?: number | string | null;
+  city?: string | null;
+  country_name?: string;
+  country_id?: string;
+  organisation_id?: number | null;
+}
+
+export interface Receipt {
+  id: string;
+  userId: number;
+  userName: string;
+  beaconQuantity: number;
+  discount: number;
+  deliveryAddress: string;
+  totalPrice: number;
+  timestamp: string;
 }
 
 export interface DeliveryAddress {
@@ -42,6 +54,7 @@ export interface DeliveryAddress {
   city: string;
   country: string;
 }
+
 // Define Order type
 export interface Order {
   beacons: number;
@@ -62,7 +75,7 @@ export type RootStackParamList = {
   };
   OrderOverview: {
     order: Order;
-    deliveryAddress: DeliveryAddress;
+    userId: string;
   };
 };
 

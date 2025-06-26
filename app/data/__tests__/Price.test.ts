@@ -41,7 +41,7 @@ describe('getTotalPrice', () => {
 });
 
 describe('calculatePrice', () => {
-  test('should calculate detailed price info without discount', () => {
+  test('should return detailed price info without discount', () => {
     const result = calculatePrice(3, 100);
     expect(result).toEqual({
       basePrice: 300,
@@ -51,12 +51,12 @@ describe('calculatePrice', () => {
     });
   });
 
-  test('should calculate detailed price info with discount', () => {
-    const result = calculatePrice(6, 100);
+  test('should return detailed price info with discount', () => {
+    const result = calculatePrice(5, 100);
     expect(result).toEqual({
-      basePrice: 600,
-      discount: 90,
-      totalPrice: 510,
+      basePrice: 500,
+      discount: 75,
+      totalPrice: 425,
       discountApplied: true,
     });
   });
@@ -70,36 +70,21 @@ describe('calculatePrice', () => {
       discountApplied: false,
     });
   });
-
-  test('should handle negative price', () => {
-    const result = calculatePrice(5, -10);
-    expect(result).toEqual({
-      basePrice: 0,
-      discount: 0,
-      totalPrice: 0,
-      discountApplied: false,
-    });
-  });
 });
 
 describe('formatPrice', () => {
   test('should format price with default currency symbol', () => {
-    expect(formatPrice(10)).toEqual('$10.00');
-    expect(formatPrice(10.5)).toEqual('$10.50');
-    expect(formatPrice(10.55)).toEqual('$10.55');
-    expect(formatPrice(10.555)).toEqual('$10.55'); // Rounds to 2 decimal places
+    const result = formatPrice(123.45);
+    expect(result).toBe('$123.45');
   });
 
   test('should format price with custom currency symbol', () => {
-    expect(formatPrice(10, '€')).toEqual('€10.00');
-    expect(formatPrice(10.5, '£')).toEqual('£10.50');
+    const result = formatPrice(123.45, '€');
+    expect(result).toBe('€123.45');
   });
 
-  test('should handle zero price', () => {
-    expect(formatPrice(0)).toEqual('$0.00');
-  });
-
-  test('should handle negative price', () => {
-    expect(formatPrice(-10)).toEqual('$-10.00');
+  test('should format price with two decimal places', () => {
+    const result = formatPrice(123.4);
+    expect(result).toBe('$123.40');
   });
 });

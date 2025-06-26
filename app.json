@@ -1,4 +1,13 @@
 {
-  "name": "CodeChallenge",
-  "displayName": "CodeChallenge"
+  "expo": {
+    "name": "Driversnote",
+    "slug": "driversnote-clean",
+    "version": "1.0.0",
+    "ios": {
+      "bundleIdentifier": "com.driversnote.app"
+    },
+    "android": {
+      "package": "com.driversnote.app"
+    }
+  }
 }
