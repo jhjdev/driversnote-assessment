@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
 import { Text, TextInput, Button, Card, useTheme } from 'react-native-paper';
 import { useNavigation, RouteProp } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
@@ -76,7 +76,8 @@ export default function DeliveryScreen({ route }: DeliveryScreenProps) {
   };
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
+      <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <Text variant="headlineMedium" style={styles.title}>
         Delivery Address
       </Text>
@@ -178,7 +179,8 @@ export default function DeliveryScreen({ route }: DeliveryScreenProps) {
       </Button>
 
       <View style={styles.bottomSpacing} />
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

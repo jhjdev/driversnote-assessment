@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert, SafeAreaView } from 'react-native';
 import { Text, Card, List, Chip, useTheme, IconButton, ActivityIndicator } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
@@ -43,7 +43,8 @@ export default function ReceiptsScreen() {
   }
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
+      <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <Text variant="headlineMedium" style={styles.title}>
         Receipts
       </Text>
@@ -113,7 +114,8 @@ export default function ReceiptsScreen() {
           );
         })
       )}
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

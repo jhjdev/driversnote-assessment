@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, SafeAreaView } from 'react-native';
 import { useNavigation, RouteProp } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { 
@@ -106,7 +106,8 @@ const Beacons: React.FC<BeaconsScreenProps> = ({ route }) => {
   }
 
   return (
-    <ScrollView style={commonStyles.container}>
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView style={commonStyles.container}>
       {/* User Info Card */}
       <Card style={commonStyles.smallCard}>
         <Card.Content>
@@ -192,7 +193,8 @@ const Beacons: React.FC<BeaconsScreenProps> = ({ route }) => {
           </Button>
         </Card.Content>
       </Card>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 

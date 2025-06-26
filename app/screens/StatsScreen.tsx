@@ -1,26 +1,109 @@
-import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { Text, Card, ProgressBar, useTheme, Divider } from 'react-native-paper';
+import React, { useEffect, useMemo } from 'react';
+import { View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
+import { Text, Card, ProgressBar, useTheme, Divider, ActivityIndicator } from 'react-native-paper';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '../store/store';
+import { fetchUsers } from '../store/user/userSlice';
+import { fetchReceipts } from '../store/receipts/receiptsSlice';
+import { formatPrice } from '../data/Price';
 
 export default function StatsScreen() {
   const theme = useTheme();
+  const dispatch = useDispatch<AppDispatch>();
+  
+  // Get data from Redux state
+  const { users, loading: usersLoading } = useSelector((state: RootState) => state.user);
+  const { receipts, loading: receiptsLoading } = useSelector((state: RootState) => state.receipts);
+  
+  const loading = usersLoading || receiptsLoading;
 
-  const stats = {
-    totalUsers: 156,
-    totalReceipts: 1234,
-    totalRevenue: 45678.99,
-    averageDiscount: 12.5,
-    topCustomers: [
-      { name: 'John Doe', purchases: 45 },
-      { name: 'Jane Smith', purchases: 38 },
-      { name: 'Mike Johnson', purchases: 32 },
-    ],
-    monthlyGrowth: 0.85,
-    discountUsage: 0.65,
-  };
+  useEffect(() => {
+    // Fetch fresh data when component mounts
+    dispatch(fetchUsers());
+    dispatch(fetchReceipts());
+  }, [dispatch]);
+
+  // Calculate real statistics from the data
+  const stats = useMemo(() => {
+    if (!users.length && !receipts.length) {
+      return {
+        totalUsers: 0,
+        totalReceipts: 0,
+        totalRevenue: 0,
+        averageDiscount: 0,
+        topCustomers: [],
+        monthlyGrowth: 0,
+        discountUsage: 0,
+        totalBeacons: 0,
+        averageOrderValue: 0,
+      };
+    }
+
+    // Basic counts
+    const totalUsers = users.length;
+    const totalReceipts = receipts.length;
+    
+    // Revenue calculations
+    const totalRevenue = receipts.reduce((sum, receipt) => sum + receipt.totalPrice, 0);
+    const averageOrderValue = totalReceipts > 0 ? totalRevenue / totalReceipts : 0;
+    
+    // Discount calculations
+    const receiptsWithDiscount = receipts.filter(receipt => receipt.discount > 0);
+    const discountUsage = totalReceipts > 0 ? receiptsWithDiscount.length / totalReceipts : 0;
+    const averageDiscount = receiptsWithDiscount.length > 0 
+      ? receiptsWithDiscount.reduce((sum, receipt) => {
+          const discountPercent = receipt.basePrice > 0 ? (receipt.discount / receipt.basePrice) * 100 : 0;
+          return sum + discountPercent;
+        }, 0) / receiptsWithDiscount.length 
+      : 0;
+    
+    // Total beacons sold
+    const totalBeacons = receipts.reduce((sum, receipt) => sum + (receipt.beacons || 0), 0);
+    
+    // Top customers by number of purchases
+    const customerPurchases = receipts.reduce((acc, receipt) => {
+      const customerName = receipt.userName;
+      acc[customerName] = (acc[customerName] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    
+    const topCustomers = Object.entries(customerPurchases)
+      .map(([name, purchases]) => ({ name, purchases }))
+      .sort((a, b) => b.purchases - a.purchases)
+      .slice(0, 5); // Top 5 customers
+    
+    // Monthly growth (simplified - could be enhanced with real date analysis)
+    const monthlyGrowth = Math.min(totalReceipts / 10, 1); // Simple metric based on total receipts
+    
+    return {
+      totalUsers,
+      totalReceipts,
+      totalRevenue,
+      averageDiscount,
+      topCustomers,
+      monthlyGrowth,
+      discountUsage,
+      totalBeacons,
+      averageOrderValue,
+    };
+  }, [users, receipts]);
+
+  if (loading) {
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
+        <View style={[styles.container, styles.centered]}>
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+          <Text variant="bodyLarge" style={styles.loadingText}>
+            Loading statistics...
+          </Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
+      <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <Text variant="headlineMedium" style={styles.title}>
         Statistics
       </Text>
@@ -41,7 +124,27 @@ export default function StatsScreen() {
             <Text variant="titleLarge" style={[styles.statNumber, { color: theme.colors.secondary }]}>
               {stats.totalReceipts}
             </Text>
-            <Text variant="bodyMedium">Total Receipts</Text>
+            <Text variant="bodyMedium">Total Orders</Text>
+          </Card.Content>
+        </Card>
+      </View>
+
+      <View style={styles.overviewRow}>
+        <Card style={[styles.overviewCard, styles.halfWidth]} mode="outlined">
+          <Card.Content style={styles.overviewContent}>
+            <Text variant="titleLarge" style={[styles.statNumber, { color: theme.colors.tertiary }]}>
+              {stats.totalBeacons}
+            </Text>
+            <Text variant="bodyMedium">Beacons Sold</Text>
+          </Card.Content>
+        </Card>
+        
+        <Card style={[styles.overviewCard, styles.halfWidth]} mode="outlined">
+          <Card.Content style={styles.overviewContent}>
+            <Text variant="titleMedium" style={[styles.statNumber, { color: theme.colors.primary }]}>
+              {formatPrice(stats.averageOrderValue)}
+            </Text>
+            <Text variant="bodyMedium">Avg Order Value</Text>
           </Card.Content>
         </Card>
       </View>
@@ -50,10 +153,10 @@ export default function StatsScreen() {
         <Card.Content>
           <Text variant="titleMedium" style={styles.cardTitle}>Revenue</Text>
           <Text variant="headlineSmall" style={[styles.revenueText, { color: theme.colors.primary }]}>
-            ${stats.totalRevenue.toLocaleString()}
+            {formatPrice(stats.totalRevenue)}
           </Text>
           <Text variant="bodySmall" style={styles.subText}>
-            Average discount: {stats.averageDiscount}%
+            Average discount: {stats.averageDiscount.toFixed(1)}%
           </Text>
         </Card.Content>
       </Card>
@@ -93,22 +196,29 @@ export default function StatsScreen() {
       <Card style={styles.card} mode="outlined">
         <Card.Content>
           <Text variant="titleMedium" style={styles.cardTitle}>Top Customers</Text>
-          {stats.topCustomers.map((customer, index) => (
-            <View key={index}>
-              <View style={styles.customerRow}>
-                <Text variant="bodyMedium" style={styles.customerName}>
-                  {customer.name}
-                </Text>
-                <Text variant="bodyMedium" style={[styles.customerPurchases, { color: theme.colors.primary }]}>
-                  {customer.purchases} purchases
-                </Text>
+          {stats.topCustomers.length > 0 ? (
+            stats.topCustomers.map((customer, index) => (
+              <View key={index}>
+                <View style={styles.customerRow}>
+                  <Text variant="bodyMedium" style={styles.customerName}>
+                    {customer.name}
+                  </Text>
+                  <Text variant="bodyMedium" style={[styles.customerPurchases, { color: theme.colors.primary }]}>
+                    {customer.purchases} order{customer.purchases !== 1 ? 's' : ''}
+                  </Text>
+                </View>
+                {index < stats.topCustomers.length - 1 && <Divider style={styles.divider} />}
               </View>
-              {index < stats.topCustomers.length - 1 && <Divider style={styles.divider} />}
-            </View>
-          ))}
+            ))
+          ) : (
+            <Text variant="bodyMedium" style={styles.emptyText}>
+              No customer data available yet
+            </Text>
+          )}
         </Card.Content>
       </Card>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -177,5 +287,18 @@ const styles = StyleSheet.create({
   },
   divider: {
     marginVertical: 4,
+  },
+  centered: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 16,
+    textAlign: 'center',
+  },
+  emptyText: {
+    textAlign: 'center',
+    opacity: 0.7,
+    fontStyle: 'italic',
   },
 });

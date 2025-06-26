@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, ScrollView, Alert } from 'react-native';
+import { View, ScrollView, Alert, SafeAreaView } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
@@ -128,7 +128,8 @@ export default function CreateUserScreen() {
   };
 
   return (
-    <ScrollView style={[commonStyles.container, { backgroundColor: theme.colors.background }]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
+      <ScrollView style={[commonStyles.container, { backgroundColor: theme.colors.background }]}>
       <Text variant="headlineMedium" style={commonStyles.title}>
         Create New User
       </Text>
@@ -178,6 +179,47 @@ export default function CreateUserScreen() {
             mode="outlined"
             style={commonStyles.input}
             keyboardType="phone-pad"
+          />
+        </Card.Content>
+      </Card>
+
+      <Card style={commonStyles.card} mode="outlined">
+        <Card.Content>
+          <Text variant="titleMedium" style={commonStyles.sectionTitle}>
+            Address Information
+          </Text>
+          
+          <TextInput
+            label="Address Line 1"
+            value={address}
+            onChangeText={setAddress}
+            mode="outlined"
+            style={commonStyles.input}
+          />
+          
+          <View style={formStyles.row}>
+            <TextInput
+              label="City"
+              value={city}
+              onChangeText={setCity}
+              mode="outlined"
+              style={[commonStyles.input, formStyles.halfWidth]}
+            />
+            <TextInput
+              label="Postal Code"
+              value={postalCode}
+              onChangeText={setPostalCode}
+              mode="outlined"
+              style={[commonStyles.input, formStyles.halfWidth]}
+            />
+          </View>
+          
+          <TextInput
+            label="Country"
+            value={country}
+            onChangeText={setCountry}
+            mode="outlined"
+            style={commonStyles.input}
           />
         </Card.Content>
       </Card>
@@ -246,7 +288,8 @@ export default function CreateUserScreen() {
       </Button>
       
       <View style={commonStyles.bottomSpacing} />
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

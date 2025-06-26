@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import { Text, Card, List, IconButton, ActivityIndicator, Dialog, TextInput, Button, Portal, Snackbar, useTheme } from 'react-native-paper';
+import { View, ScrollView, TouchableOpacity, Alert, SafeAreaView } from 'react-native';
+import { Text, Card, List, IconButton, ActivityIndicator, Dialog, TextInput, Button, Portal, Snackbar, useTheme, Chip } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
@@ -17,6 +17,10 @@ export default function UsersScreen() {
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [editedName, setEditedName] = useState('');
   const [editedTag, setEditedTag] = useState('');
+  const [editedAddress1, setEditedAddress1] = useState('');
+  const [editedCity, setEditedCity] = useState('');
+  const [editedPostalCode, setEditedPostalCode] = useState('');
+  const [editedCountryName, setEditedCountryName] = useState('');
   const [showEditDialog, setShowEditDialog] = useState(false);
 
   useEffect(() => {
@@ -39,6 +43,10 @@ export default function UsersScreen() {
     setEditingUser(user);
     setEditedName(user.full_name);
     setEditedTag(user.tag || '');
+    setEditedAddress1(user.address1 || '');
+    setEditedCity(user.city || '');
+    setEditedPostalCode(user.postal_code?.toString() || '');
+    setEditedCountryName(user.country_name || '');
     setShowEditDialog(true);
   };
 
@@ -90,7 +98,7 @@ export default function UsersScreen() {
   }
 
   return (
-    <>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <ScrollView style={[commonStyles.container, { backgroundColor: theme.colors.background }]}>
         <Text variant="headlineMedium" style={commonStyles.title}>
           Users
@@ -109,10 +117,19 @@ export default function UsersScreen() {
                 <Card.Content>
                   <List.Item
                     title={user.full_name}
-                    description={`Tag: ${user.tag || 'user'} • ${user.city || 'Unknown City'}, ${user.country_name || 'Unknown Country'}`}
+                    description={`${user.city || 'Unknown City'}, ${user.country_name || 'Unknown Country'}`}
                     left={(props) => <List.Icon {...props} icon="account" />}
                     right={(props) => <List.Icon {...props} icon="chevron-right" />}
                   />
+                  {user.tag && user.tag !== 'user' && (
+                    <View style={userCardStyles.tagsContainer}>
+                      {user.tag.split(', ').map((tag, index) => (
+                        <Chip key={index} style={userCardStyles.tagChip} textStyle={userCardStyles.tagChipText} compact>
+                          {tag}
+                        </Chip>
+                      ))}
+                    </View>
+                  )}
                   {user.address1 && (
                     <Text variant="bodySmall" style={userCardStyles.address}>
                       {user.address1}
@@ -146,20 +163,51 @@ export default function UsersScreen() {
         <Dialog visible={showEditDialog} onDismiss={handleCancelEdit}>
           <Dialog.Title>Edit User</Dialog.Title>
           <Dialog.Content>
-            <TextInput
-              label="Full Name"
-              value={editedName}
-              onChangeText={setEditedName}
-              mode="outlined"
-              style={commonStyles.input}
-            />
-            <TextInput
-              label="Tag"
-              value={editedTag}
-              onChangeText={setEditedTag}
-              mode="outlined"
-              style={commonStyles.input}
-            />
+            <ScrollView style={{ maxHeight: 400 }}>
+              <TextInput
+                label="Full Name"
+                value={editedName}
+                onChangeText={setEditedName}
+                mode="outlined"
+                style={commonStyles.input}
+              />
+              <TextInput
+                label="Tag"
+                value={editedTag}
+                onChangeText={setEditedTag}
+                mode="outlined"
+                style={commonStyles.input}
+                placeholder="e.g., VIP, Student, Senior"
+              />
+              <TextInput
+                label="Address"
+                value={editedAddress1}
+                onChangeText={setEditedAddress1}
+                mode="outlined"
+                style={commonStyles.input}
+              />
+              <TextInput
+                label="City"
+                value={editedCity}
+                onChangeText={setEditedCity}
+                mode="outlined"
+                style={commonStyles.input}
+              />
+              <TextInput
+                label="Postal Code"
+                value={editedPostalCode}
+                onChangeText={setEditedPostalCode}
+                mode="outlined"
+                style={commonStyles.input}
+              />
+              <TextInput
+                label="Country"
+                value={editedCountryName}
+                onChangeText={setEditedCountryName}
+                mode="outlined"
+                style={commonStyles.input}
+              />
+            </ScrollView>
           </Dialog.Content>
           <Dialog.Actions>
             <Button onPress={handleCancelEdit}>Cancel</Button>
@@ -185,7 +233,7 @@ export default function UsersScreen() {
       >
         {error || 'An error occurred'}
       </Snackbar>
-    </>
+    </SafeAreaView>
   );
 }
 

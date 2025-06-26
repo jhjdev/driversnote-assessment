@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, Linking, SafeAreaView } from 'react-native';
 import { Text, Card, List, Switch, useTheme, Divider } from 'react-native-paper';
 
 interface SettingsScreenProps {
@@ -11,7 +11,8 @@ export default function SettingsScreen({ isDarkMode, toggleDarkMode }: SettingsS
   const theme = useTheme();
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
+      <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <Text variant="headlineMedium" style={styles.title}>
         Settings
       </Text>
@@ -136,7 +137,8 @@ export default function SettingsScreen({ isDarkMode, toggleDarkMode }: SettingsS
           />
         </Card.Content>
       </Card>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

@@ -211,6 +211,23 @@ export const userCardStyles = StyleSheet.create({
     color: '#2E7D32',
     fontSize: 12,
   },
+  tagChip: {
+    backgroundColor: '#E3F2FD',
+    marginRight: 4,
+    marginBottom: 4,
+  },
+  tagChipText: {
+    color: '#1565C0',
+    fontSize: 11,
+  },
+  tagsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginLeft: 56,
+    marginTop: 4,
+    marginBottom: 8,
+    gap: 6,
+  },
 });
 
 // Form field styles

@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, ScrollView, Alert, SafeAreaView, StyleSheet } from 'react-native';
 import { Text, Card, Button, useTheme, Divider } from 'react-native-paper';
 import { useNavigation, RouteProp, CommonActions } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store';
 import { createReceipt } from '../store/receipts/receiptsSlice';
 import { formatPrice } from '../data/Price';
+import { commonStyles } from '../styles';
 
 interface OrderOverviewScreenProps {
   route: RouteProp<{ params: { order: any; userId: number } }, 'params'>;
@@ -68,7 +69,8 @@ export default function OrderOverviewScreen({ route }: OrderOverviewScreenProps)
   };
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
+      <ScrollView style={[commonStyles.container, { backgroundColor: theme.colors.background }]}>
       <Text variant="headlineMedium" style={styles.title}>
         Order Overview
       </Text>
@@ -163,9 +165,10 @@ export default function OrderOverviewScreen({ route }: OrderOverviewScreenProps)
       >
         Confirm and Send Order
       </Button>
-
-      <View style={styles.bottomSpacing} />
-    </ScrollView>
+      
+      <View style={commonStyles.bottomSpacing} />
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
