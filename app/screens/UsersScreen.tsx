@@ -8,7 +8,7 @@ import { fetchUsers, updateUser, deleteUser, selectUser, setSelectedUser } from 
 import { User } from '../types/types';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { commonStyles, userCardStyles, textStyles, createThemedStyles } from '../styles';
-export default function UsersScreen() {
+export default function UsersScreen () {
   const theme = useTheme();
   const themedStyles = createThemedStyles(theme);
   const dispatch = useDispatch<AppDispatch>();
@@ -60,9 +60,9 @@ export default function UsersScreen() {
         {
           text: 'Delete',
           style: 'destructive',
-          onPress: () => dispatch(deleteUser(user.id))
-        }
-      ]
+          onPress: () => dispatch(deleteUser(user.id)),
+        },
+      ],
     );
   };
 
@@ -72,8 +72,8 @@ export default function UsersScreen() {
         id: editingUser.id,
         userData: {
           full_name: editedName.trim(),
-          tag: editedTag.trim() || 'user'
-        }
+          tag: editedTag.trim() || 'user',
+        },
       }));
       setShowEditDialog(false);
       setEditingUser(null);
@@ -105,15 +105,17 @@ export default function UsersScreen() {
           <Text variant="headlineMedium" style={commonStyles.title}>
             Users
           </Text>
-        
-        {users.length === 0 ? (
+
+        {users.length === 0
+          ? (
           <View style={commonStyles.emptyContainer}>
             <Text variant="bodyLarge" style={textStyles.emptyText}>
               No users found. Create a new user to get started.
             </Text>
           </View>
-        ) : (
-          users.map((user) => (
+            )
+          : (
+              users.map((user) => (
             <Card key={user.id} style={commonStyles.smallCard} mode="outlined">
               <TouchableOpacity onPress={() => handleUserPress(user)}>
                 <Card.Content>
@@ -142,26 +144,26 @@ export default function UsersScreen() {
                 </Card.Content>
               </TouchableOpacity>
               <Card.Actions style={userCardStyles.actions}>
-                <IconButton 
-                  icon="pencil" 
-                  mode="outlined" 
+                <IconButton
+                  icon="pencil"
+                  mode="outlined"
                   size={20}
                   onPress={() => handleEditUser(user)}
                 />
-                <IconButton 
-                  icon="delete" 
-                  mode="outlined" 
+                <IconButton
+                  icon="delete"
+                  mode="outlined"
                   size={20}
                   iconColor={theme.colors.error}
                   onPress={() => handleDeleteUser(user)}
                 />
               </Card.Actions>
             </Card>
-          ))
-        )}
+              ))
+            )}
         </ScrollView>
       </View>
-      
+
       <Portal>
         <Dialog visible={showEditDialog} onDismiss={handleCancelEdit}>
           <Dialog.Title>Edit User</Dialog.Title>
@@ -214,8 +216,8 @@ export default function UsersScreen() {
           </Dialog.Content>
           <Dialog.Actions>
             <Button onPress={handleCancelEdit}>Cancel</Button>
-            <Button 
-              mode="contained" 
+            <Button
+              mode="contained"
               onPress={handleSaveEdit}
               disabled={!editedName.trim()}
             >
@@ -224,7 +226,7 @@ export default function UsersScreen() {
           </Dialog.Actions>
         </Dialog>
       </Portal>
-      
+
       <Snackbar
         visible={snackbarVisible}
         onDismiss={() => setSnackbarVisible(false)}
@@ -239,4 +241,3 @@ export default function UsersScreen() {
     </SafeAreaView>
   );
 }
-

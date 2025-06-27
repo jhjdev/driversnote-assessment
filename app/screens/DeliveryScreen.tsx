@@ -15,7 +15,7 @@ type DeliveryNavigationProp = StackNavigationProp<
   'OrderOverview'
 >;
 
-export default function DeliveryScreen({ route }: DeliveryScreenProps) {
+export default function DeliveryScreen ({ route }: DeliveryScreenProps) {
   const theme = useTheme();
   const navigation = useNavigation<DeliveryNavigationProp>();
   const { order, userId } = route.params;
@@ -36,7 +36,7 @@ export default function DeliveryScreen({ route }: DeliveryScreenProps) {
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-    
+
     if (!formData.name.trim()) newErrors.name = 'Name is required';
     if (!formData.address.trim()) newErrors.address = 'Address is required';
     if (!formData.postalCode.trim()) newErrors.postalCode = 'Postal code is required';
@@ -97,11 +97,13 @@ export default function DeliveryScreen({ route }: DeliveryScreenProps) {
             style={styles.input}
             error={!!errors.name}
           />
-          {errors.name ? (
+          {errors.name
+            ? (
             <Text variant="bodySmall" style={styles.errorText}>
               {errors.name}
             </Text>
-          ) : null}
+              )
+            : null}
 
           <TextInput
             label="Address *"
@@ -111,11 +113,13 @@ export default function DeliveryScreen({ route }: DeliveryScreenProps) {
             style={styles.input}
             error={!!errors.address}
           />
-          {errors.address ? (
+          {errors.address
+            ? (
             <Text variant="bodySmall" style={styles.errorText}>
               {errors.address}
             </Text>
-          ) : null}
+              )
+            : null}
 
           <TextInput
             label="Address 2 (Optional)"
@@ -134,11 +138,13 @@ export default function DeliveryScreen({ route }: DeliveryScreenProps) {
             keyboardType="default"
             error={!!errors.postalCode}
           />
-          {errors.postalCode ? (
+          {errors.postalCode
+            ? (
             <Text variant="bodySmall" style={styles.errorText}>
               {errors.postalCode}
             </Text>
-          ) : null}
+              )
+            : null}
 
           <TextInput
             label="City *"
@@ -148,11 +154,13 @@ export default function DeliveryScreen({ route }: DeliveryScreenProps) {
             style={styles.input}
             error={!!errors.city}
           />
-          {errors.city ? (
+          {errors.city
+            ? (
             <Text variant="bodySmall" style={styles.errorText}>
               {errors.city}
             </Text>
-          ) : null}
+              )
+            : null}
 
           <TextInput
             label="Country *"
@@ -162,11 +170,13 @@ export default function DeliveryScreen({ route }: DeliveryScreenProps) {
             style={styles.input}
             error={!!errors.country}
           />
-          {errors.country ? (
+          {errors.country
+            ? (
             <Text variant="bodySmall" style={styles.errorText}>
               {errors.country}
             </Text>
-          ) : null}
+              )
+            : null}
         </Card.Content>
       </Card>
 

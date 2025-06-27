@@ -22,7 +22,7 @@ interface TabBarIconProps {
   size: number;
 }
 
-function CustomTabBar({ state, descriptors, navigation }: any) {
+function CustomTabBar ({ state, descriptors, navigation }: any) {
   const theme = useTheme();
   const { isDarkMode } = useAppTheme();
 
@@ -59,7 +59,7 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
             if (route.name === 'Users') {
               navigation.navigate(route.name, {
                 screen: 'UsersList',
-                params: {}
+                params: {},
               });
             } else {
               navigation.navigate(route.name);
@@ -104,7 +104,7 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
   );
 }
 
-export default function TabNavigator() {
+export default function TabNavigator () {
   const { isDarkMode, toggleDarkMode } = useAppTheme();
 
   return (
@@ -114,36 +114,36 @@ export default function TabNavigator() {
         headerShown: false,
       }}
     >
-      <Tab.Screen 
-        name="Users" 
+      <Tab.Screen
+        name="Users"
         component={UserStackNavigator}
         options={{
           tabBarLabel: 'Users',
         }}
       />
-      <Tab.Screen 
-        name="Receipts" 
+      <Tab.Screen
+        name="Receipts"
         component={ReceiptsScreen}
         options={{
           tabBarLabel: 'Receipts',
         }}
       />
-      <Tab.Screen 
-        name="CreateUser" 
+      <Tab.Screen
+        name="CreateUser"
         component={CreateUserScreen}
         options={{
           tabBarLabel: 'Create',
         }}
       />
-      <Tab.Screen 
-        name="Stats" 
+      <Tab.Screen
+        name="Stats"
         component={StatsScreen}
         options={{
           tabBarLabel: 'Stats',
         }}
       />
-      <Tab.Screen 
-        name="Settings" 
+      <Tab.Screen
+        name="Settings"
         options={{
           tabBarLabel: 'Settings',
         }}

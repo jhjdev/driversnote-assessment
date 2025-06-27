@@ -6,8 +6,8 @@ import { fetchMiddleware } from '../fetchMiddleware';
 // Define our API service using RTK Query
 export const apiSlice = createApi({
   reducerPath: 'api',
-  baseQuery: fetchBaseQuery({ 
-    baseUrl: '/' // This will be overridden in endpoints that need different base URLs
+  baseQuery: fetchBaseQuery({
+    baseUrl: '/', // This will be overridden in endpoints that need different base URLs
   }),
   tagTypes: ['User', 'Experiment', 'BeaconPrice'],
   endpoints: (builder) => ({
@@ -20,11 +20,11 @@ export const apiSlice = createApi({
           const users = await fetchMiddleware.fetchAllUsers();
           return { data: users };
         } catch (error) {
-          return { 
-            error: { 
-              status: 'CUSTOM_ERROR', 
-              error: 'Failed to fetch users' 
-            } 
+          return {
+            error: {
+              status: 'CUSTOM_ERROR',
+              error: 'Failed to fetch users',
+            },
           };
         }
       },
@@ -36,33 +36,33 @@ export const apiSlice = createApi({
             ]
           : [{ type: 'User', id: 'LIST' }],
     }),
-    
+
     // Get user by ID
     getUserById: builder.query<User, number>({
       queryFn: async (userId, { dispatch }) => {
         try {
           const user = await fetchMiddleware.fetchUserById(userId);
           if (!user) {
-            return { 
-              error: { 
-                status: 'CUSTOM_ERROR', 
-                error: `User with ID ${userId} not found` 
-              } 
+            return {
+              error: {
+                status: 'CUSTOM_ERROR',
+                error: `User with ID ${userId} not found`,
+              },
             };
           }
           return { data: user };
         } catch (error) {
-          return { 
-            error: { 
-              status: 'CUSTOM_ERROR', 
-              error: `Failed to fetch user with ID ${userId}` 
-            } 
+          return {
+            error: {
+              status: 'CUSTOM_ERROR',
+              error: `Failed to fetch user with ID ${userId}`,
+            },
           };
         }
       },
       providesTags: (result, error, id) => [{ type: 'User', id }],
     }),
-    
+
     // Get user experiment data
     getUserExperiment: builder.query<ExperimentData, string>({
       query: (userId) => ({
@@ -71,7 +71,7 @@ export const apiSlice = createApi({
       }),
       providesTags: (result, error, userId) => [{ type: 'Experiment', id: userId }],
     }),
-    
+
     // Get beacon prices
     getBeaconPrices: builder.query<BeaconPrice[], void>({
       query: () => ({
@@ -80,74 +80,73 @@ export const apiSlice = createApi({
       }),
       providesTags: [{ type: 'BeaconPrice', id: 'LIST' }],
     }),
-    
+
     // Get beacon price for specific user
     getUserBeaconPrice: builder.query<number, { userId: string, countryId: string }>({
-      async queryFn({ userId, countryId }, { dispatch, getState }, _extraOptions, fetchWithBQ) {
+      async queryFn ({ userId, countryId }, { dispatch, getState }, _extraOptions, fetchWithBQ) {
         try {
           // Get user experiment data
           const experimentResult = await fetchWithBQ(`https://633ab21ae02b9b64c6151a44.mockapi.io/api/v2/experiments/${userId}`);
           if (experimentResult.error) {
             return { error: experimentResult.error };
           }
-          
+
           const experimentData = experimentResult.data as ExperimentData;
           const variant = experimentData.experiments.find(
-            exp => exp.experiment === 'beacon_price'
+            exp => exp.experiment === 'beacon_price',
           )?.variant;
-          
+
           if (!variant) {
-            return { 
-              error: { 
-                status: 'CUSTOM_ERROR', 
-                error: 'No variant found for beacon_price experiment' 
-              } 
+            return {
+              error: {
+                status: 'CUSTOM_ERROR',
+                error: 'No variant found for beacon_price experiment',
+              },
             };
           }
-          
+
           // Get price data
           const priceResult = await fetchWithBQ('https://633ab21ae02b9b64c6151a44.mockapi.io/api/v2/BeaconPrice');
           if (priceResult.error) {
             return { error: priceResult.error };
           }
-          
+
           const priceData = priceResult.data as BeaconPrice[];
           const priceInfo = priceData.find(item => item.country_id === countryId);
-          
+
           if (!priceInfo) {
-            return { 
-              error: { 
-                status: 'CUSTOM_ERROR', 
-                error: `No price info found for country_id: ${countryId}` 
-              } 
+            return {
+              error: {
+                status: 'CUSTOM_ERROR',
+                error: `No price info found for country_id: ${countryId}`,
+              },
             };
           }
-          
+
           // Determine which price to use based on variant
-          const priceKey = isPriceVariant(variant) 
-            ? variantToPriceKey(variant) 
+          const priceKey = isPriceVariant(variant)
+            ? variantToPriceKey(variant)
             : 'price_control';
-            
+
           const price = priceInfo[priceKey as keyof BeaconPrice] as number;
-          
+
           return { data: price };
         } catch (error) {
-          return { 
-            error: { 
-              status: 'CUSTOM_ERROR', 
-              error: 'Failed to fetch price data' 
-            } 
+          return {
+            error: {
+              status: 'CUSTOM_ERROR',
+              error: 'Failed to fetch price data',
+            },
           };
         }
       },
       providesTags: (result, error, arg) => [
         { type: 'BeaconPrice', id: arg.countryId },
-        { type: 'Experiment', id: arg.userId }
+        { type: 'Experiment', id: arg.userId },
       ],
     }),
   }),
 });
-
 
 // Export generated hooks
 export const {

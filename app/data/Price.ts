@@ -37,16 +37,16 @@ export const DISCOUNT_PERCENT = 0.15;
  * @returns The total price after applying any applicable discounts
  */
 export const getTotalPrice = (
-  beacons: number, 
-  singlePrice: number, 
-  userDiscountPercent: number = 0
+  beacons: number,
+  singlePrice: number,
+  userDiscountPercent: number = 0,
 ): number => {
   if (beacons <= 0 || singlePrice < 0) {
     return 0;
   }
 
   const basePrice = beacons * singlePrice;
-  
+
   // Apply user-specific discount if they have one
   let discount = 0;
   if (userDiscountPercent > 0) {
@@ -70,7 +70,7 @@ export const getTotalPrice = (
 export const calculatePrice = (
   beacons: number,
   singlePrice: number,
-  userDiscountPercent: number = 0
+  userDiscountPercent: number = 0,
 ): PriceCalculation => {
   if (beacons <= 0 || singlePrice < 0) {
     return {
@@ -82,11 +82,11 @@ export const calculatePrice = (
   }
 
   const basePrice = beacons * singlePrice;
-  
+
   // Determine discount and whether it's applied
   let discount = 0;
   let discountApplied = false;
-  
+
   if (userDiscountPercent > 0) {
     // User has a specific discount
     discount = parseFloat((basePrice * (userDiscountPercent / 100)).toFixed(2));
@@ -96,7 +96,7 @@ export const calculatePrice = (
     discount = parseFloat((basePrice * DISCOUNT_PERCENT).toFixed(2));
     discountApplied = true;
   }
-  
+
   const totalPrice = parseFloat((basePrice - discount).toFixed(2));
 
   return {

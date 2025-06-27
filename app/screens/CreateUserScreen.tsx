@@ -3,27 +3,27 @@ import { View, ScrollView, Alert, SafeAreaView, Platform } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-import { 
-  Text, 
-  TextInput, 
-  Button, 
-  Card, 
-  useTheme, 
+import {
+  Text,
+  TextInput,
+  Button,
+  Card,
+  useTheme,
   Chip,
   HelperText,
-  ActivityIndicator 
+  ActivityIndicator,
 } from 'react-native-paper';
 import { RootState, AppDispatch } from '../store/store';
 import { createUser } from '../store/user/userSlice';
 import { User } from '../types/types';
 import { commonStyles, formStyles, createThemedStyles } from '../styles';
 
-export default function CreateUserScreen() {
+export default function CreateUserScreen () {
   const theme = useTheme();
   const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation();
   const { loading } = useSelector((state: RootState) => state.user);
-  
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -45,10 +45,10 @@ export default function CreateUserScreen() {
   };
 
   const handleTagToggle = (tag: string) => {
-    setSelectedTags(prev => 
-      prev.includes(tag) 
+    setSelectedTags(prev =>
+      prev.includes(tag)
         ? prev.filter(t => t !== tag)
-        : [...prev, tag]
+        : [...prev, tag],
     );
   };
 
@@ -59,12 +59,12 @@ export default function CreateUserScreen() {
 
     // Validation
     let hasErrors = false;
-    
+
     if (!name.trim()) {
       setNameError('Name is required');
       hasErrors = true;
     }
-    
+
     if (!email.trim()) {
       setEmailError('Email is required');
       hasErrors = true;
@@ -80,7 +80,7 @@ export default function CreateUserScreen() {
       const userData: Omit<User, 'id'> = {
         full_name: name,
         tag: selectedTags.length > 0 ? selectedTags.join(', ') : 'user',
-        discount: discount, // Save the discount percentage
+        discount, // Save the discount percentage
         address1: address || null,
         address2: null,
         postal_code: postalCode ? (isNaN(Number(postalCode)) ? postalCode : Number(postalCode)) : null,
@@ -120,7 +120,7 @@ export default function CreateUserScreen() {
             },
             style: 'cancel',
           },
-        ]
+        ],
       );
     } catch (error) {
       Alert.alert('Error', 'Failed to create user. Please try again.');
@@ -136,13 +136,13 @@ export default function CreateUserScreen() {
           <Text variant="headlineMedium" style={commonStyles.title}>
             Create New User
           </Text>
-      
+
       <Card style={commonStyles.card} mode="outlined">
         <Card.Content>
           <Text variant="titleMedium" style={commonStyles.sectionTitle}>
             User Information
           </Text>
-          
+
           <TextInput
             label="Full Name *"
             value={name}
@@ -191,7 +191,7 @@ export default function CreateUserScreen() {
           <Text variant="titleMedium" style={commonStyles.sectionTitle}>
             Address Information
           </Text>
-          
+
           <TextInput
             label="Address Line 1"
             value={address}
@@ -199,7 +199,7 @@ export default function CreateUserScreen() {
             mode="outlined"
             style={commonStyles.input}
           />
-          
+
           <View style={formStyles.row}>
             <TextInput
               label="City"
@@ -216,7 +216,7 @@ export default function CreateUserScreen() {
               style={[commonStyles.input, formStyles.halfWidth]}
             />
           </View>
-          
+
           <TextInput
             label="Country"
             value={country}
@@ -232,7 +232,7 @@ export default function CreateUserScreen() {
           <Text variant="titleMedium" style={commonStyles.sectionTitle}>
             Discount Settings
           </Text>
-          
+
           <View style={formStyles.discountContainer}>
             <Text variant="bodyLarge" style={formStyles.discountLabel}>
               Discount: {discount}%
@@ -264,7 +264,7 @@ export default function CreateUserScreen() {
           <Text variant="bodySmall" style={commonStyles.subtitle}>
             Select applicable tags for this customer
           </Text>
-          
+
           <View style={formStyles.tagsContainer}>
             {discountTags.map((tag) => (
               <Chip
@@ -289,11 +289,10 @@ export default function CreateUserScreen() {
       >
         Create User
       </Button>
-      
+
         <View style={commonStyles.bottomSpacing} />
         </ScrollView>
       </View>
     </SafeAreaView>
   );
 }
-

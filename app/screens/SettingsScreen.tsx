@@ -8,7 +8,7 @@ interface SettingsScreenProps {
   toggleDarkMode: () => void;
 }
 
-export default function SettingsScreen({ isDarkMode, toggleDarkMode }: SettingsScreenProps) {
+export default function SettingsScreen ({ isDarkMode, toggleDarkMode }: SettingsScreenProps) {
   const theme = useTheme();
   const themedStyles = createThemedStyles(theme);
 
@@ -19,7 +19,7 @@ export default function SettingsScreen({ isDarkMode, toggleDarkMode }: SettingsS
           <Text variant="headlineMedium" style={commonStyles.title}>
             Settings
           </Text>
-      
+
       {/* Appearance */}
       <Card style={commonStyles.card} mode="outlined">
         <Card.Content>

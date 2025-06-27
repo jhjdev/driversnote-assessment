@@ -12,7 +12,7 @@ import { ThemeProvider, useAppTheme } from './app/context/ThemeContext';
 import TabNavigator from './app/navigation/TabNavigator';
 import { store, persistor } from './app/store/store';
 
-function AppContent(): React.JSX.Element {
+function AppContent (): React.JSX.Element {
   const { theme, isDarkMode } = useAppTheme();
 
   return (
@@ -25,15 +25,15 @@ function AppContent(): React.JSX.Element {
   );
 }
 
-export default function App(): React.JSX.Element {
+export default function App (): React.JSX.Element {
   return (
     <Provider store={store}>
-      <PersistGate 
+      <PersistGate
         loading={
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <ActivityIndicator size="large" />
           </View>
-        } 
+        }
         persistor={persistor}
       >
         <SafeAreaProvider>

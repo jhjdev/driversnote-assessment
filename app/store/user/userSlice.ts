@@ -12,7 +12,7 @@ export const fetchUsers = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : 'Failed to fetch users');
     }
-  }
+  },
 );
 
 export const fetchUserById = createAsyncThunk(
@@ -27,7 +27,7 @@ export const fetchUserById = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : 'Failed to fetch user');
     }
-  }
+  },
 );
 
 export const createUser = createAsyncThunk(
@@ -39,7 +39,7 @@ export const createUser = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : 'Failed to create user');
     }
-  }
+  },
 );
 
 export const updateUser = createAsyncThunk(
@@ -51,7 +51,7 @@ export const updateUser = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : 'Failed to update user');
     }
-  }
+  },
 );
 
 export const deleteUser = createAsyncThunk(
@@ -63,7 +63,7 @@ export const deleteUser = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : 'Failed to delete user');
     }
-  }
+  },
 );
 
 // State interface

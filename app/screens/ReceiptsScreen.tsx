@@ -7,7 +7,7 @@ import { RootState, AppDispatch } from '../store/store';
 import { fetchReceipts, deleteReceipt, addMockReceipts } from '../store/receipts/receiptsSlice';
 import { formatPrice } from '../data/Price';
 
-export default function ReceiptsScreen() {
+export default function ReceiptsScreen () {
   const theme = useTheme();
   const dispatch = useDispatch<AppDispatch>();
   const { receipts, loading, error } = useSelector((state: RootState) => state.receipts);
@@ -27,9 +27,9 @@ export default function ReceiptsScreen() {
         {
           text: 'Delete',
           style: 'destructive',
-          onPress: () => dispatch(deleteReceipt(receiptId))
-        }
-      ]
+          onPress: () => dispatch(deleteReceipt(receiptId)),
+        },
+      ],
     );
   };
 
@@ -51,21 +51,23 @@ export default function ReceiptsScreen() {
           <Text variant="headlineMedium" style={commonStyles.title}>
             Receipts
           </Text>
-      
-      {receipts.length === 0 ? (
+
+      {receipts.length === 0
+        ? (
         <View style={commonStyles.emptyContainer}>
           <Text variant="bodyLarge" style={textStyles.emptyText}>
             No receipts found. Make a purchase to see receipts here.
           </Text>
         </View>
-      ) : (
-        receipts.map((receipt) => {
-          const receiptDate = new Date(receipt.date).toLocaleDateString();
-          const discountPercent = receipt.discountApplied 
-            ? `${Math.round((receipt.discount / receipt.basePrice) * 100)}%`
-            : '0%';
+          )
+        : (
+            receipts.map((receipt) => {
+              const receiptDate = new Date(receipt.date).toLocaleDateString();
+              const discountPercent = receipt.discountApplied
+                ? `${Math.round((receipt.discount / receipt.basePrice) * 100)}%`
+                : '0%';
 
-          return (
+              return (
             <Card key={receipt.id} style={styles.card} mode="outlined">
               <Card.Content>
                 <List.Item
@@ -105,18 +107,18 @@ export default function ReceiptsScreen() {
                 </View>
               </Card.Content>
               <Card.Actions style={styles.cardActions}>
-                <IconButton 
-                  icon="delete" 
-                  mode="outlined" 
+                <IconButton
+                  icon="delete"
+                  mode="outlined"
                   size={20}
                   iconColor={theme.colors.error}
                   onPress={() => handleDeleteReceipt(receipt.id, receipt.userName)}
                 />
               </Card.Actions>
             </Card>
-          );
-        })
-      )}
+              );
+            })
+          )}
         </ScrollView>
       </View>
     </SafeAreaView>

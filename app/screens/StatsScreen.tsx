@@ -8,15 +8,15 @@ import { fetchUsers } from '../store/user/userSlice';
 import { fetchReceipts } from '../store/receipts/receiptsSlice';
 import { formatPrice } from '../data/Price';
 
-export default function StatsScreen() {
+export default function StatsScreen () {
   const theme = useTheme();
   const themedStyles = createThemedStyles(theme);
   const dispatch = useDispatch<AppDispatch>();
-  
+
   // Get data from Redux state
   const { users, loading: usersLoading } = useSelector((state: RootState) => state.user);
   const { receipts, loading: receiptsLoading } = useSelector((state: RootState) => state.receipts);
-  
+
   const loading = usersLoading || receiptsLoading;
 
   useEffect(() => {
@@ -44,39 +44,39 @@ export default function StatsScreen() {
     // Basic counts
     const totalUsers = users.length;
     const totalReceipts = receipts.length;
-    
+
     // Revenue calculations
     const totalRevenue = receipts.reduce((sum, receipt) => sum + receipt.totalPrice, 0);
     const averageOrderValue = totalReceipts > 0 ? totalRevenue / totalReceipts : 0;
-    
+
     // Discount calculations
     const receiptsWithDiscount = receipts.filter(receipt => receipt.discount > 0);
     const discountUsage = totalReceipts > 0 ? receiptsWithDiscount.length / totalReceipts : 0;
-    const averageDiscount = receiptsWithDiscount.length > 0 
+    const averageDiscount = receiptsWithDiscount.length > 0
       ? receiptsWithDiscount.reduce((sum, receipt) => {
-          const discountPercent = receipt.basePrice > 0 ? (receipt.discount / receipt.basePrice) * 100 : 0;
-          return sum + discountPercent;
-        }, 0) / receiptsWithDiscount.length 
+        const discountPercent = receipt.basePrice > 0 ? (receipt.discount / receipt.basePrice) * 100 : 0;
+        return sum + discountPercent;
+      }, 0) / receiptsWithDiscount.length
       : 0;
-    
+
     // Total beacons sold
     const totalBeacons = receipts.reduce((sum, receipt) => sum + (receipt.beacons || 0), 0);
-    
+
     // Top customers by number of purchases
     const customerPurchases = receipts.reduce((acc, receipt) => {
       const customerName = receipt.userName;
       acc[customerName] = (acc[customerName] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
-    
+
     const topCustomers = Object.entries(customerPurchases)
       .map(([name, purchases]) => ({ name, purchases }))
       .sort((a, b) => b.purchases - a.purchases)
       .slice(0, 5); // Top 5 customers
-    
+
     // Monthly growth (simplified - could be enhanced with real date analysis)
     const monthlyGrowth = Math.min(totalReceipts / 10, 1); // Simple metric based on total receipts
-    
+
     return {
       totalUsers,
       totalReceipts,
@@ -110,7 +110,7 @@ export default function StatsScreen() {
           <Text variant="headlineMedium" style={commonStyles.title}>
             Statistics
           </Text>
-      
+
       {/* Overview Cards */}
       <View style={styles.overviewRow}>
         <Card style={[styles.overviewCard, styles.halfWidth]} mode="outlined">
@@ -121,7 +121,7 @@ export default function StatsScreen() {
             <Text variant="bodyMedium">Total Users</Text>
           </Card.Content>
         </Card>
-        
+
         <Card style={[styles.overviewCard, styles.halfWidth]} mode="outlined">
           <Card.Content style={styles.overviewContent}>
             <Text variant="titleLarge" style={[styles.statNumber, { color: theme.colors.secondary }]}>
@@ -141,7 +141,7 @@ export default function StatsScreen() {
             <Text variant="bodyMedium">Beacons Sold</Text>
           </Card.Content>
         </Card>
-        
+
         <Card style={[styles.overviewCard, styles.halfWidth]} mode="outlined">
           <Card.Content style={styles.overviewContent}>
             <Text variant="titleMedium" style={[styles.statNumber, { color: theme.colors.primary }]}>
@@ -168,11 +168,11 @@ export default function StatsScreen() {
       <Card style={styles.card} mode="outlined">
         <Card.Content>
           <Text variant="titleMedium" style={styles.cardTitle}>Performance Metrics</Text>
-          
+
           <View style={styles.progressItem}>
             <Text variant="bodyMedium">Monthly Growth</Text>
-            <ProgressBar 
-              progress={stats.monthlyGrowth} 
+            <ProgressBar
+              progress={stats.monthlyGrowth}
               color={theme.colors.primary}
               style={styles.progressBar}
             />
@@ -183,8 +183,8 @@ export default function StatsScreen() {
 
           <View style={styles.progressItem}>
             <Text variant="bodyMedium">Discount Usage</Text>
-            <ProgressBar 
-              progress={stats.discountUsage} 
+            <ProgressBar
+              progress={stats.discountUsage}
               color={theme.colors.secondary}
               style={styles.progressBar}
             />
@@ -199,8 +199,9 @@ export default function StatsScreen() {
       <Card style={styles.card} mode="outlined">
         <Card.Content>
           <Text variant="titleMedium" style={styles.cardTitle}>Top Customers</Text>
-          {stats.topCustomers.length > 0 ? (
-            stats.topCustomers.map((customer, index) => (
+          {stats.topCustomers.length > 0
+            ? (
+                stats.topCustomers.map((customer, index) => (
               <View key={index}>
                 <View style={styles.customerRow}>
                   <Text variant="bodyMedium" style={styles.customerName}>
@@ -212,12 +213,13 @@ export default function StatsScreen() {
                 </View>
                 {index < stats.topCustomers.length - 1 && <Divider style={styles.divider} />}
               </View>
-            ))
-          ) : (
+                ))
+              )
+            : (
             <Text variant="bodyMedium" style={styles.emptyText}>
               No customer data available yet
             </Text>
-          )}
+              )}
         </Card.Content>
       </Card>
         </ScrollView>

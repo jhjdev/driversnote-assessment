@@ -12,7 +12,7 @@ interface OrderOverviewScreenProps {
   route: RouteProp<{ params: { order: any; userId: number } }, 'params'>;
 }
 
-export default function OrderOverviewScreen({ route }: OrderOverviewScreenProps) {
+export default function OrderOverviewScreen ({ route }: OrderOverviewScreenProps) {
   const theme = useTheme();
   const navigation = useNavigation();
   const dispatch = useDispatch<AppDispatch>();
@@ -56,12 +56,12 @@ export default function OrderOverviewScreen({ route }: OrderOverviewScreenProps)
                 CommonActions.reset({
                   index: 0,
                   routes: [{ name: 'UsersList' }],
-                })
+                }),
               );
             },
             style: 'cancel',
           },
-        ]
+        ],
       );
     } catch (error) {
       Alert.alert('Error', 'Failed to create receipt. Please try again.');
@@ -82,7 +82,7 @@ export default function OrderOverviewScreen({ route }: OrderOverviewScreenProps)
           <Text variant="titleMedium" style={styles.sectionTitle}>
             Order Details
           </Text>
-          
+
           <View style={styles.infoRow}>
             <Text variant="bodyLarge" style={styles.infoLabel}>
               Ordered iBeacons:
@@ -140,7 +140,7 @@ export default function OrderOverviewScreen({ route }: OrderOverviewScreenProps)
           <Text variant="titleMedium" style={styles.sectionTitle}>
             Delivery Address
           </Text>
-          
+
           <Text variant="bodyLarge" style={styles.addressText}>
             {deliveryAddress.name}
           </Text>
@@ -166,7 +166,7 @@ export default function OrderOverviewScreen({ route }: OrderOverviewScreenProps)
       >
         Confirm and Send Order
       </Button>
-      
+
         <View style={commonStyles.bottomSpacing} />
         </ScrollView>
       </View>

@@ -60,7 +60,7 @@ describe('userSlice', () => {
       };
 
       const result = userReducer(previousState, clearError());
-      
+
       expect(result.error).toBeNull();
       expect(result.users).toEqual(previousState.users);
       expect(result.selectedUser).toEqual(previousState.selectedUser);
@@ -74,7 +74,7 @@ describe('userSlice', () => {
       };
 
       const result = userReducer(previousState, clearSelectedUser());
-      
+
       expect(result.selectedUser).toBeNull();
       expect(result.users).toEqual(previousState.users);
       expect(result.error).toEqual(previousState.error);
@@ -83,7 +83,7 @@ describe('userSlice', () => {
 
     it('should handle setSelectedUser', () => {
       const result = userReducer(initialState, setSelectedUser(mockUser));
-      
+
       expect(result.selectedUser).toEqual(mockUser);
       expect(result.users).toEqual(initialState.users);
       expect(result.error).toEqual(initialState.error);
@@ -95,7 +95,7 @@ describe('userSlice', () => {
     it('should handle fetchUsers.pending', () => {
       const action = { type: fetchUsers.pending.type };
       const result = userReducer(initialState, action);
-      
+
       expect(result.loading).toBe(true);
       expect(result.error).toBeNull();
     });
@@ -103,7 +103,7 @@ describe('userSlice', () => {
     it('should handle fetchUsers.fulfilled', () => {
       const action = { type: fetchUsers.fulfilled.type, payload: mockUsers };
       const result = userReducer(initialState, action);
-      
+
       expect(result.loading).toBe(false);
       expect(result.users).toEqual(mockUsers);
       expect(result.error).toBeNull();
@@ -113,7 +113,7 @@ describe('userSlice', () => {
       const errorMessage = 'Failed to fetch users';
       const action = { type: fetchUsers.rejected.type, payload: errorMessage };
       const result = userReducer(initialState, action);
-      
+
       expect(result.loading).toBe(false);
       expect(result.error).toBe(errorMessage);
       expect(result.users).toEqual([]);
@@ -126,10 +126,10 @@ describe('userSlice', () => {
         ...initialState,
         users: [mockUsers[1]], // Only second user initially
       };
-      
+
       const action = { type: createUser.fulfilled.type, payload: mockUser };
       const result = userReducer(previousState, action);
-      
+
       expect(result.loading).toBe(false);
       expect(result.users).toHaveLength(2);
       expect(result.users).toContain(mockUser);
@@ -145,10 +145,10 @@ describe('userSlice', () => {
         users: mockUsers,
         selectedUser: mockUser,
       };
-      
+
       const action = { type: updateUser.fulfilled.type, payload: updatedUser };
       const result = userReducer(previousState, action);
-      
+
       expect(result.loading).toBe(false);
       expect(result.users[0]).toEqual(updatedUser);
       expect(result.selectedUser).toEqual(updatedUser);
@@ -162,10 +162,10 @@ describe('userSlice', () => {
         users: mockUsers,
         selectedUser: mockUser, // Different user selected
       };
-      
+
       const action = { type: updateUser.fulfilled.type, payload: updatedUser };
       const result = userReducer(previousState, action);
-      
+
       expect(result.selectedUser).toEqual(mockUser); // Should remain unchanged
       expect(result.users[1]).toEqual(updatedUser);
     });
@@ -177,10 +177,10 @@ describe('userSlice', () => {
         ...initialState,
         users: mockUsers,
       };
-      
+
       const action = { type: deleteUser.fulfilled.type, payload: mockUser.id };
       const result = userReducer(previousState, action);
-      
+
       expect(result.loading).toBe(false);
       expect(result.users).toHaveLength(1);
       expect(result.users).not.toContain(mockUser);
@@ -193,10 +193,10 @@ describe('userSlice', () => {
         users: mockUsers,
         selectedUser: mockUser,
       };
-      
+
       const action = { type: deleteUser.fulfilled.type, payload: mockUser.id };
       const result = userReducer(previousState, action);
-      
+
       expect(result.selectedUser).toBeNull();
       expect(result.users).not.toContain(mockUser);
     });
@@ -207,10 +207,10 @@ describe('userSlice', () => {
         users: mockUsers,
         selectedUser: mockUser,
       };
-      
+
       const action = { type: deleteUser.fulfilled.type, payload: mockUsers[1].id };
       const result = userReducer(previousState, action);
-      
+
       expect(result.selectedUser).toEqual(mockUser); // Should remain unchanged
       expect(result.users).toHaveLength(1);
       expect(result.users[0]).toEqual(mockUser);

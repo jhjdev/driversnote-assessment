@@ -28,7 +28,7 @@ export const commonStyles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  
+
   // Typography
   title: {
     marginBottom: 16,
@@ -43,7 +43,7 @@ export const commonStyles = StyleSheet.create({
     marginBottom: 12,
     opacity: 0.7,
   },
-  
+
   // Cards and surfaces
   card: {
     marginBottom: 16,
@@ -58,7 +58,7 @@ export const commonStyles = StyleSheet.create({
     borderRadius: 12,
     elevation: 2,
   },
-  
+
   // Forms
   input: {
     marginBottom: 16,
@@ -66,7 +66,7 @@ export const commonStyles = StyleSheet.create({
   smallInput: {
     marginBottom: 8,
   },
-  
+
   // Buttons
   button: {
     marginTop: 16,
@@ -79,7 +79,7 @@ export const commonStyles = StyleSheet.create({
   buttonContent: {
     paddingVertical: 8,
   },
-  
+
   // States
   loadingContainer: {
     flex: 1,
@@ -99,7 +99,7 @@ export const commonStyles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 50,
   },
-  
+
   // Spacing
   bottomSpacing: {
     height: 20,

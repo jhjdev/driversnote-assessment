@@ -19,7 +19,7 @@ export type UserStackParamList = {
 
 const Stack = createStackNavigator<UserStackParamList>();
 
-export default function UserStackNavigator() {
+export default function UserStackNavigator () {
   const theme = useTheme();
 
   return (
@@ -36,30 +36,30 @@ export default function UserStackNavigator() {
         headerBackTitleVisible: false,
       }}
     >
-      <Stack.Screen 
-        name="UsersList" 
+      <Stack.Screen
+        name="UsersList"
         component={UsersScreen}
         options={{
           title: 'Select User',
           headerShown: false, // We'll show this in the tab bar
         }}
       />
-      <Stack.Screen 
-        name="Beacons" 
+      <Stack.Screen
+        name="Beacons"
         component={BeaconsScreen}
         options={{
           title: 'Select Beacons',
         }}
       />
-      <Stack.Screen 
-        name="Delivery" 
+      <Stack.Screen
+        name="Delivery"
         component={DeliveryScreen}
         options={{
           title: 'Delivery Address',
         }}
       />
-      <Stack.Screen 
-        name="OrderOverview" 
+      <Stack.Screen
+        name="OrderOverview"
         component={OrderOverviewScreen}
         options={{
           title: 'Order Overview',

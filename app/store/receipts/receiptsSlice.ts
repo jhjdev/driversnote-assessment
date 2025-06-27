@@ -35,7 +35,7 @@ export const fetchReceipts = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : 'Failed to fetch receipts');
     }
-  }
+  },
 );
 
 export const createReceipt = createAsyncThunk(
@@ -47,7 +47,7 @@ export const createReceipt = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : 'Failed to create receipt');
     }
-  }
+  },
 );
 
 export const deleteReceipt = createAsyncThunk(
@@ -59,7 +59,7 @@ export const deleteReceipt = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : 'Failed to delete receipt');
     }
-  }
+  },
 );
 
 // State interface

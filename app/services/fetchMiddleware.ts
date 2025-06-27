@@ -7,7 +7,7 @@ export class FetchMiddleware {
   /**
    * Initialize users collection if needed
    */
-  async initializeUsers(): Promise<void> {
+  async initializeUsers (): Promise<void> {
     try {
       console.log('Initializing users in MongoDB...');
       // Try to initialize with sample data if collection is empty
@@ -23,7 +23,7 @@ export class FetchMiddleware {
   /**
    * Fetch all users from MongoDB
    */
-  async fetchAllUsers(): Promise<User[]> {
+  async fetchAllUsers (): Promise<User[]> {
     try {
       console.log('Fetching users from MongoDB...');
       const users = await mongodbService.getUsers();
@@ -41,7 +41,7 @@ export class FetchMiddleware {
   /**
    * Fetch a single user by ID
    */
-  async fetchUserById(id: number): Promise<User | null> {
+  async fetchUserById (id: number): Promise<User | null> {
     try {
       console.log(`Fetching user ${id} from MongoDB...`);
       const user = await mongodbService.getUserById(id);
@@ -72,7 +72,7 @@ export class FetchMiddleware {
   /**
    * Create a new user
    */
-  async createUser(userData: Omit<User, 'id'>): Promise<User> {
+  async createUser (userData: Omit<User, 'id'>): Promise<User> {
     try {
       console.log('Creating user in MongoDB...', userData);
       const newUser = await mongodbService.createUser(userData);
@@ -87,7 +87,7 @@ export class FetchMiddleware {
   /**
    * Update an existing user
    */
-  async updateUser(id: number, userData: Partial<User>): Promise<User> {
+  async updateUser (id: number, userData: Partial<User>): Promise<User> {
     try {
       console.log(`Updating user ${id} in MongoDB...`, userData);
       const updatedUser = await mongodbService.updateUser(id, userData);
@@ -102,7 +102,7 @@ export class FetchMiddleware {
   /**
    * Delete a user
    */
-  async deleteUser(id: number): Promise<boolean> {
+  async deleteUser (id: number): Promise<boolean> {
     try {
       console.log(`Deleting user ${id} from MongoDB...`);
       const result = await mongodbService.deleteUser(id);

@@ -19,10 +19,10 @@ describe('Form Validation Utils', () => {
   // Postal code validation for different countries
   const validatePostalCode = (postalCode: string, countryId: string): boolean => {
     const patterns = {
-      'us': /^\d{5}(-\d{4})?$/,
-      'ca': /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/,
-      'dk': /^\d{4}$/,
-      'au': /^\d{4}$/,
+      us: /^\d{5}(-\d{4})?$/,
+      ca: /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/,
+      dk: /^\d{4}$/,
+      au: /^\d{4}$/,
     };
 
     const pattern = patterns[countryId as keyof typeof patterns];
@@ -161,17 +161,17 @@ describe('Data Formatting Utils', () => {
   // Format address for display
   const formatAddress = (user: { address1?: string | null; address2?: string | null; city?: string | null; postal_code?: number | string | null; country_name?: string }): string => {
     const parts = [];
-    
+
     if (user.address1) parts.push(user.address1);
     if (user.address2) parts.push(user.address2);
-    
+
     const cityPostal = [];
     if (user.city) cityPostal.push(user.city);
     if (user.postal_code) cityPostal.push(user.postal_code.toString());
-    
+
     if (cityPostal.length > 0) parts.push(cityPostal.join(' '));
     if (user.country_name) parts.push(user.country_name);
-    
+
     return parts.join(', ');
   };
 
@@ -216,7 +216,7 @@ describe('Data Formatting Utils', () => {
         postal_code: '10001',
         country_name: 'USA',
       };
-      
+
       expect(formatAddress(user)).toBe('123 Main St, Apt 2B, New York 10001, USA');
     });
 
@@ -226,7 +226,7 @@ describe('Data Formatting Utils', () => {
         city: 'Los Angeles',
         country_name: 'USA',
       };
-      
+
       expect(formatAddress(user)).toBe('456 Oak Ave, Los Angeles, USA');
     });
 
@@ -242,7 +242,7 @@ describe('Data Formatting Utils', () => {
         postal_code: 60601,
         country_name: 'USA',
       };
-      
+
       expect(formatAddress(user)).toBe('789 Pine St, Chicago 60601, USA');
     });
   });

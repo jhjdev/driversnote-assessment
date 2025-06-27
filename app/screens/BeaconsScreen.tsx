@@ -2,19 +2,19 @@ import React, { useState } from 'react';
 import { View, ScrollView, SafeAreaView, Platform } from 'react-native';
 import { useNavigation, RouteProp } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
-import { 
-  Text, 
-  Card, 
-  Title, 
-  Paragraph, 
-  Button, 
-  IconButton, 
+import {
+  Text,
+  Card,
+  Title,
+  Paragraph,
+  Button,
+  IconButton,
   ActivityIndicator,
   Divider,
   Surface,
   useTheme,
   Avatar,
-  Chip
+  Chip,
 } from 'react-native-paper';
 import { RootState } from '../store/store';
 import { calculatePrice, formatPrice } from '../data/Price';
@@ -132,12 +132,12 @@ const Beacons: React.FC<BeaconsScreenProps> = ({ route }) => {
         <Card.Content>
           <Title>Select Beacon Quantity</Title>
           <Paragraph>Choose the number of iBeacons for your order</Paragraph>
-          
+
           <View style={counterStyles.container}>
-            <IconButton 
-              icon="minus" 
-              onPress={decrementBeaconCount} 
-              size={28} 
+            <IconButton
+              icon="minus"
+              onPress={decrementBeaconCount}
+              size={28}
               style={counterStyles.button}
               disabled={beaconCount <= 1}
             />
@@ -145,10 +145,10 @@ const Beacons: React.FC<BeaconsScreenProps> = ({ route }) => {
               <Text style={counterStyles.value}>{beaconCount}</Text>
               <Text style={counterStyles.label}>beacon{beaconCount !== 1 ? 's' : ''}</Text>
             </Surface>
-            <IconButton 
-              icon="plus" 
-              onPress={incrementBeaconCount} 
-              size={28} 
+            <IconButton
+              icon="plus"
+              onPress={incrementBeaconCount}
+              size={28}
               style={counterStyles.button}
             />
           </View>
@@ -183,9 +183,9 @@ const Beacons: React.FC<BeaconsScreenProps> = ({ route }) => {
             </View>
           </Surface>
 
-          <Button 
-            mode="contained" 
-            onPress={() => navigation.navigate('Delivery', { order, userId })} 
+          <Button
+            mode="contained"
+            onPress={() => navigation.navigate('Delivery', { order, userId })}
             style={commonStyles.button}
             icon="cart"
             contentStyle={commonStyles.buttonContent}
@@ -200,6 +200,4 @@ const Beacons: React.FC<BeaconsScreenProps> = ({ route }) => {
   );
 };
 
-
 export default Beacons;
-

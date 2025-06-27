@@ -55,7 +55,7 @@ interface InitializeUsersRequest {
   users: User[];
 }
 
-async function connectToMongoDB(): Promise<Db> {
+async function connectToMongoDB (): Promise<Db> {
   try {
     const uri = process.env.MONGODB_URI;
     const dbName = process.env.MONGODB_DB_NAME || 'driversnote';
@@ -95,7 +95,7 @@ app.get('/api/users/:id', async (req: Request, res: Response): Promise<Response>
     if (!userIdParam) {
       return res.status(400).json({ error: 'User ID is required' });
     }
-    
+
     const userId = parseInt(userIdParam);
     if (isNaN(userId)) {
       return res.status(400).json({ error: 'Invalid user ID' });
@@ -125,7 +125,7 @@ app.post('/api/users', async (req: Request<{}, User, CreateUserRequest>, res: Re
       .findOne({}, { sort: { id: -1 } });
     const newUser: User = {
       ...userData,
-      id: (maxUser?.id || 0) + 1
+      id: (maxUser?.id || 0) + 1,
     };
 
     await db.collection<User>('users').insertOne(newUser);
@@ -143,12 +143,12 @@ app.put('/api/users/:id', async (req: Request, res: Response): Promise<Response>
     if (!userIdParam) {
       return res.status(400).json({ error: 'User ID is required' });
     }
-    
+
     const userId = parseInt(userIdParam);
     if (isNaN(userId)) {
       return res.status(400).json({ error: 'Invalid user ID' });
     }
-    
+
     const userData: Partial<User> = req.body;
 
     const result = await db
@@ -174,7 +174,7 @@ app.delete('/api/users/:id', async (req: Request, res: Response): Promise<Respon
     if (!userIdParam) {
       return res.status(400).json({ error: 'User ID is required' });
     }
-    
+
     const userId = parseInt(userIdParam);
     if (isNaN(userId)) {
       return res.status(400).json({ error: 'Invalid user ID' });
@@ -233,11 +233,11 @@ app.get('/api/receipts', async (req: Request, res: Response) => {
 app.post('/api/receipts', async (req: Request<{}, Receipt, CreateReceiptRequest>, res: Response) => {
   try {
     const receiptData = req.body;
-    
+
     const newReceipt: Receipt = {
       ...receiptData,
       id: new Date().getTime().toString(), // Simple ID generation
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     await db.collection<Receipt>('receipts').insertOne(newReceipt);
@@ -280,7 +280,7 @@ app.get('/api/health', (req: Request, res: Response) => {
 });
 
 // Start server
-async function startServer(): Promise<void> {
+async function startServer (): Promise<void> {
   try {
     await connectToMongoDB();
 
