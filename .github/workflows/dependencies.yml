@@ -1,0 +1,112 @@
+name: Dependencies & Security
+
+on:
+  schedule:
+    # Run weekly on Mondays at 9 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+        
+      - name: Run npm audit
+        run: |
+          echo "🔍 Running security audit..."
+          npm audit --audit-level=moderate || {
+            echo "⚠️  Security vulnerabilities found!"
+            echo "Please review and fix the vulnerabilities."
+            exit 1
+          }
+          
+      - name: Check for outdated packages
+        run: |
+          echo "📦 Checking for outdated packages..."
+          npm outdated || true
+          
+      - name: Create issue if vulnerabilities found
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '🚨 Security vulnerabilities detected';
+            const body = `
+            ## Security Audit Report
+            
+            The automated security audit has detected vulnerabilities in the project dependencies.
+            
+            ### Action Required
+            - Review the vulnerabilities by running \`npm audit\`
+            - Update vulnerable packages with \`npm audit fix\`
+            - For manual fixes, run \`npm audit fix --force\` (use with caution)
+            
+            ### Next Steps
+            1. Run \`npm audit\` locally to see detailed vulnerability information
+            2. Update dependencies as needed
+            3. Test the application after updates
+            4. Commit and push the fixes
+            
+            This issue was automatically created by the security audit workflow.
+            `;
+            
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['security', 'dependencies', 'automated']
+            });
+
+  expo-updates:
+    name: Check Expo Updates
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+        
+      - name: Install Expo CLI
+        run: npm install -g @expo/cli
+        
+      - name: Check Expo SDK updates
+        run: |
+          echo "🔄 Checking for Expo SDK updates..."
+          npx expo install --fix || true
+          
+          if git diff --quiet; then
+            echo "✅ No Expo updates needed"
+          else
+            echo "📦 Expo dependencies updated"
+            git status
+          fi
+          
+      - name: Run Expo doctor after updates
+        run: |
+          echo "🩺 Running Expo doctor after potential updates..."
+          npx expo doctor || {
+            echo "⚠️  Expo doctor found issues after updates"
+            exit 1
+          }

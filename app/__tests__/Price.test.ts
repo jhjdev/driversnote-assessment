@@ -4,7 +4,7 @@ import {
   formatPrice,
   MIN_BEACONS_FOR_DISCOUNT,
   DISCOUNT_PERCENT,
-} from '../Price';
+} from '../data/Price';
 
 describe('getTotalPrice', () => {
   test('should return correct price without discount', () => {
