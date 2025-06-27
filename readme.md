@@ -89,14 +89,24 @@ This project is a complete mobile application built with React Native and Expo t
    ```
 
 2. **Set up environment variables:**
-   Create a `.env` file in the root directory:
-   ```env
-   MONGODB_URI=your_mongodb_connection_string
-   MONGODB_DB_NAME=driversnote
-   PORT=4000
-   EXPO_ROUTER_IMPORT_MODE=sync
-   EXPO_ROUTER_APP_ROOT=./app
+   
+   Copy the example environment file and configure it:
+   ```bash
+   cp .env.example .env
    ```
+   
+   Edit the `.env` file with your actual values:
+   ```env
+   # MongoDB Configuration
+   MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/
+   MONGODB_DB_NAME=your_database_name
+   PORT=4000
+   ```
+   
+   **Important**: 
+   - Replace `username:password@cluster.mongodb.net/` with your actual MongoDB credentials
+   - Use your own database name (don't use the example database name)
+   - The `.env` file is git-ignored for security
 
 3. **Install server dependencies:**
    ```bash
