@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, Linking, SafeAreaView } from 'react-native';
+import { View, StyleSheet, ScrollView, Linking, SafeAreaView, Platform } from 'react-native';
 import { Text, Card, List, Switch, useTheme, Divider } from 'react-native-paper';
+import { commonStyles, createThemedStyles } from '../styles';
 
 interface SettingsScreenProps {
   isDarkMode: boolean;
@@ -9,18 +10,20 @@ interface SettingsScreenProps {
 
 export default function SettingsScreen({ isDarkMode, toggleDarkMode }: SettingsScreenProps) {
   const theme = useTheme();
+  const themedStyles = createThemedStyles(theme);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
-      <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <Text variant="headlineMedium" style={styles.title}>
-        Settings
-      </Text>
+    <SafeAreaView style={[commonStyles.containerNoPadding, themedStyles.background]}>
+      <View style={[commonStyles.safeContainer, themedStyles.background]}>
+        <ScrollView style={[commonStyles.container, themedStyles.background]}>
+          <Text variant="headlineMedium" style={commonStyles.title}>
+            Settings
+          </Text>
       
       {/* Appearance */}
-      <Card style={styles.card} mode="outlined">
+      <Card style={commonStyles.card} mode="outlined">
         <Card.Content>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
+          <Text variant="titleMedium" style={commonStyles.sectionTitle}>
             Appearance
           </Text>
           <List.Item
@@ -37,75 +40,60 @@ export default function SettingsScreen({ isDarkMode, toggleDarkMode }: SettingsS
         </Card.Content>
       </Card>
 
-      {/* Business Settings */}
-      <Card style={styles.card} mode="outlined">
+      {/* Tech Stack */}
+      <Card style={commonStyles.card} mode="outlined">
         <Card.Content>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
-            Business Settings
+          <Text variant="titleMedium" style={commonStyles.sectionTitle}>
+            Tech Stack
           </Text>
           <List.Item
-            title="Default Discount"
-            description="Set the default discount percentage"
-            left={(props) => <List.Icon {...props} icon="percent" />}
-            right={(props) => <List.Icon {...props} icon="chevron-right" />}
+            title="React Native"
+            description="Framework for building native apps"
+            left={(props) => <List.Icon {...props} icon="code-tags" />}
           />
           <Divider />
           <List.Item
-            title="Tax Settings"
-            description="Configure tax rates and calculations"
-            left={(props) => <List.Icon {...props} icon="calculator" />}
-            right={(props) => <List.Icon {...props} icon="chevron-right" />}
+            title="Redux"
+            description="State management"
+            left={(props) => <List.Icon {...props} icon="code-brackets" />}
           />
           <Divider />
           <List.Item
-            title="Receipt Template"
-            description="Customize receipt appearance"
-            left={(props) => <List.Icon {...props} icon="receipt" />}
-            right={(props) => <List.Icon {...props} icon="chevron-right" />}
+            title="TypeScript"
+            description="Typed JavaScript"
+            left={(props) => <List.Icon {...props} icon="language-typescript" />}
+          />
+          <Divider />
+          <List.Item
+            title="Expo"
+            description="Toolchain for React Native"
+            left={(props) => <List.Icon {...props} icon="file-code" />}
           />
         </Card.Content>
       </Card>
 
-      {/* User Management */}
-      <Card style={styles.card} mode="outlined">
+      {/* Device Info */}
+      <Card style={commonStyles.card} mode="outlined">
         <Card.Content>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
-            User Management
+          <Text variant="titleMedium" style={commonStyles.sectionTitle}>
+            Device Info
           </Text>
           <List.Item
-            title="User Permissions"
-            description="Manage user access levels"
-            left={(props) => <List.Icon {...props} icon="account-cog" />}
-            right={(props) => <List.Icon {...props} icon="chevron-right" />}
+            title="Platform"
+            description="iOS"
+            left={(props) => <List.Icon {...props} icon="cellphone" />}
           />
           <Divider />
           <List.Item
-            title="Bulk Import"
-            description="Import users from CSV file"
-            left={(props) => <List.Icon {...props} icon="upload" />}
-            right={(props) => <List.Icon {...props} icon="chevron-right" />}
-          />
-        </Card.Content>
-      </Card>
-
-      {/* Data & Backup */}
-      <Card style={styles.card} mode="outlined">
-        <Card.Content>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
-            Data & Backup
-          </Text>
-          <List.Item
-            title="Export Data"
-            description="Export receipts and user data"
-            left={(props) => <List.Icon {...props} icon="download" />}
-            right={(props) => <List.Icon {...props} icon="chevron-right" />}
+            title="Screen Size"
+            description="1080 x 2400"
+            left={(props) => <List.Icon {...props} icon="monitor-cellphone" />}
           />
           <Divider />
           <List.Item
-            title="Backup Settings"
-            description="Configure automatic backups"
-            left={(props) => <List.Icon {...props} icon="backup-restore" />}
-            right={(props) => <List.Icon {...props} icon="chevron-right" />}
+            title="OS Version"
+            description="16.0"
+            left={(props) => <List.Icon {...props} icon="information" />}
           />
         </Card.Content>
       </Card>
@@ -137,7 +125,8 @@ export default function SettingsScreen({ isDarkMode, toggleDarkMode }: SettingsS
           />
         </Card.Content>
       </Card>
-      </ScrollView>
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }

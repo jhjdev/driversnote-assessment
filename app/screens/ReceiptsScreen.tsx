@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, Alert, SafeAreaView } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert, SafeAreaView, Platform } from 'react-native';
 import { Text, Card, List, Chip, useTheme, IconButton, ActivityIndicator } from 'react-native-paper';
+import { commonStyles, createThemedStyles, textStyles } from '../styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
 import { fetchReceipts, deleteReceipt, addMockReceipts } from '../store/receipts/receiptsSlice';
@@ -10,6 +11,7 @@ export default function ReceiptsScreen() {
   const theme = useTheme();
   const dispatch = useDispatch<AppDispatch>();
   const { receipts, loading, error } = useSelector((state: RootState) => state.receipts);
+  const themedStyles = createThemedStyles(theme);
 
   useEffect(() => {
     // First try to fetch from MongoDB
@@ -33,7 +35,7 @@ export default function ReceiptsScreen() {
 
   if (loading) {
     return (
-      <View style={[styles.container, styles.centered, { backgroundColor: theme.colors.background }]}>
+      <View style={[commonStyles.container, commonStyles.centered, themedStyles.background]}>
         <ActivityIndicator size="large" color={theme.colors.primary} />
         <Text variant="bodyLarge" style={styles.loadingText}>
           Loading receipts...
@@ -43,15 +45,16 @@ export default function ReceiptsScreen() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
-      <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <Text variant="headlineMedium" style={styles.title}>
-        Receipts
-      </Text>
+    <SafeAreaView style={[commonStyles.containerNoPadding, themedStyles.background]}>
+      <View style={[commonStyles.safeContainer, themedStyles.background]}>
+        <ScrollView style={[commonStyles.container, themedStyles.background]}>
+          <Text variant="headlineMedium" style={commonStyles.title}>
+            Receipts
+          </Text>
       
       {receipts.length === 0 ? (
-        <View style={styles.emptyContainer}>
-          <Text variant="bodyLarge" style={styles.emptyText}>
+        <View style={commonStyles.emptyContainer}>
+          <Text variant="bodyLarge" style={textStyles.emptyText}>
             No receipts found. Make a purchase to see receipts here.
           </Text>
         </View>
@@ -78,7 +81,7 @@ export default function ReceiptsScreen() {
                   )}
                 />
                 <View style={styles.itemsContainer}>
-                  <Text variant="bodySmall" style={styles.itemsLabel}>Items:</Text>
+                  <Text variant="bodySmall" style={textStyles.emptyText}>Items:</Text>
                   <View style={styles.itemsRow}>
                     {receipt.items.map((item, index) => (
                       <Chip key={index} compact style={styles.itemChip}>
@@ -114,7 +117,8 @@ export default function ReceiptsScreen() {
           );
         })
       )}
-      </ScrollView>
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }

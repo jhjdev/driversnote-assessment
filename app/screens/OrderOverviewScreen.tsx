@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, Alert, SafeAreaView, StyleSheet } from 'react-native';
+import { View, ScrollView, Alert, SafeAreaView, StyleSheet, Platform } from 'react-native';
 import { Text, Card, Button, useTheme, Divider } from 'react-native-paper';
 import { useNavigation, RouteProp, CommonActions } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
@@ -70,10 +70,11 @@ export default function OrderOverviewScreen({ route }: OrderOverviewScreenProps)
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
-      <ScrollView style={[commonStyles.container, { backgroundColor: theme.colors.background }]}>
-      <Text variant="headlineMedium" style={styles.title}>
-        Order Overview
-      </Text>
+      <View style={{ flex: 1, backgroundColor: theme.colors.background, paddingTop: Platform.OS === 'android' ? 20 : 0 }}>
+        <ScrollView style={[commonStyles.container, { backgroundColor: theme.colors.background }]}>
+          <Text variant="headlineMedium" style={styles.title}>
+            Order Overview
+          </Text>
 
       {/* Order Details */}
       <Card style={styles.card} mode="outlined">
@@ -166,8 +167,9 @@ export default function OrderOverviewScreen({ route }: OrderOverviewScreenProps)
         Confirm and Send Order
       </Button>
       
-      <View style={commonStyles.bottomSpacing} />
-      </ScrollView>
+        <View style={commonStyles.bottomSpacing} />
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }

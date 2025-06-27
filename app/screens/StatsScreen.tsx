@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
-import { View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
+import { View, StyleSheet, ScrollView, SafeAreaView, Platform } from 'react-native';
 import { Text, Card, ProgressBar, useTheme, Divider, ActivityIndicator } from 'react-native-paper';
+import { commonStyles, createThemedStyles } from '../styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
 import { fetchUsers } from '../store/user/userSlice';
@@ -9,6 +10,7 @@ import { formatPrice } from '../data/Price';
 
 export default function StatsScreen() {
   const theme = useTheme();
+  const themedStyles = createThemedStyles(theme);
   const dispatch = useDispatch<AppDispatch>();
   
   // Get data from Redux state
@@ -90,10 +92,10 @@ export default function StatsScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
-        <View style={[styles.container, styles.centered]}>
+      <SafeAreaView style={[commonStyles.containerNoPadding, themedStyles.background]}>
+        <View style={[commonStyles.loadingContainer, themedStyles.background]}>
           <ActivityIndicator size="large" color={theme.colors.primary} />
-          <Text variant="bodyLarge" style={styles.loadingText}>
+          <Text variant="bodyLarge" style={commonStyles.loadingText}>
             Loading statistics...
           </Text>
         </View>
@@ -102,11 +104,12 @@ export default function StatsScreen() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
-      <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <Text variant="headlineMedium" style={styles.title}>
-        Statistics
-      </Text>
+    <SafeAreaView style={[commonStyles.containerNoPadding, themedStyles.background]}>
+      <View style={[commonStyles.safeContainer, themedStyles.background]}>
+        <ScrollView style={[commonStyles.container, themedStyles.background]}>
+          <Text variant="headlineMedium" style={commonStyles.title}>
+            Statistics
+          </Text>
       
       {/* Overview Cards */}
       <View style={styles.overviewRow}>
@@ -217,7 +220,8 @@ export default function StatsScreen() {
           )}
         </Card.Content>
       </Card>
-      </ScrollView>
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, TouchableOpacity, Alert, SafeAreaView } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Alert, SafeAreaView, Platform } from 'react-native';
 import { Text, Card, List, IconButton, ActivityIndicator, Dialog, TextInput, Button, Portal, Snackbar, useTheme, Chip } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,9 +7,10 @@ import { RootState, AppDispatch } from '../store/store';
 import { fetchUsers, updateUser, deleteUser, selectUser, setSelectedUser } from '../store/user/userSlice';
 import { User } from '../types/types';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { commonStyles, userCardStyles, textStyles } from '../styles';
+import { commonStyles, userCardStyles, textStyles, createThemedStyles } from '../styles';
 export default function UsersScreen() {
   const theme = useTheme();
+  const themedStyles = createThemedStyles(theme);
   const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation();
   const { users, loading, error } = useSelector((state: RootState) => state.user);
@@ -98,11 +99,12 @@ export default function UsersScreen() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
-      <ScrollView style={[commonStyles.container, { backgroundColor: theme.colors.background }]}>
-        <Text variant="headlineMedium" style={commonStyles.title}>
-          Users
-        </Text>
+    <SafeAreaView style={[commonStyles.containerNoPadding, themedStyles.background]}>
+      <View style={[commonStyles.safeContainer, themedStyles.background]}>
+        <ScrollView style={[commonStyles.container, themedStyles.background]}>
+          <Text variant="headlineMedium" style={commonStyles.title}>
+            Users
+          </Text>
         
         {users.length === 0 ? (
           <View style={commonStyles.emptyContainer}>
@@ -157,7 +159,8 @@ export default function UsersScreen() {
             </Card>
           ))
         )}
-      </ScrollView>
+        </ScrollView>
+      </View>
       
       <Portal>
         <Dialog visible={showEditDialog} onDismiss={handleCancelEdit}>

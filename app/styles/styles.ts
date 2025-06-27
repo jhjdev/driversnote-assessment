@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 import { MD3Theme } from 'react-native-paper';
 
 // Common base styles (theme-agnostic)
@@ -10,6 +10,10 @@ export const commonStyles = StyleSheet.create({
   },
   containerNoPadding: {
     flex: 1,
+  },
+  safeContainer: {
+    flex: 1,
+    paddingTop: Platform.OS === 'android' ? 20 : 0,
   },
   centered: {
     justifyContent: 'center',
@@ -28,6 +32,7 @@ export const commonStyles = StyleSheet.create({
   // Typography
   title: {
     marginBottom: 16,
+    marginTop: Platform.OS === 'android' ? 16 : 4,
     textAlign: 'center',
   },
   sectionTitle: {

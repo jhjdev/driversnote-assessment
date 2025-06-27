@@ -1,5 +1,6 @@
 import { MONGODB_URI, MONGODB_DB_NAME } from '@env';
 import { User, Receipt } from '../types/types';
+import { Platform } from 'react-native';
 
 // MongoDB Data API service for hosted database access
 class MongoDBService {
@@ -21,7 +22,9 @@ class MongoDBService {
     // MongoDB Data API configuration
     // For now, we'll use a simple HTTP API approach
     this.appId = 'data-endpoint';
-    this.apiEndpoint = 'http://localhost:4000/api'; // Your backend API
+    // Use platform-specific endpoint: Android emulator uses 10.0.2.2 to access host
+    const baseUrl = Platform.OS === 'android' ? 'http://10.0.2.2:4000' : 'http://localhost:4000';
+    this.apiEndpoint = `${baseUrl}/api`;
     this.dataSource = clusterName;
     this.database = dbName;
     this.apiKey = '';

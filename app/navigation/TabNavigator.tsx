@@ -72,7 +72,7 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
             case 'Users':
               return focused ? 'account-group' : 'account-group-outline';
             case 'Receipts':
-              return focused ? 'receipt' : 'receipt-text-outline';
+              return focused ? 'receipt' : 'file-document-outline';
             case 'Stats':
               return focused ? 'chart-line' : 'chart-line-variant';
             case 'Settings':

@@ -24,6 +24,8 @@ This project is a complete mobile application built with React Native and Expo t
 - ✅ TypeScript strict configuration
 - ✅ Express.js backend with MongoDB integration
 - ✅ Redux Toolkit state management
+- ✅ Consistent safe area handling across Android/iOS
+- ✅ Centralized and consistent style system
 - ✅ Navigation stack reset after order completion
 
 ## 🛠 Tech Stack
@@ -160,6 +162,12 @@ TabNavigator
 - `POST /api/receipts` - Create new receipt
 
 ## 🧪 Key Implementation Notes
+
+### Styling and Safe Area Fixes
+Implemented centralized styling to ensure consistent title spacing and visibility on Android:
+- Unified style usage across screens
+- Leveraged platform-specific configurations for Android safe areas
+- Removed all inline styles and inconsistencies for predictability
 
 ### Navigation Reset Fix
 The application includes a fix for navigation stack issues where the order flow would persist after completion. When navigating to Users or Receipts tabs after completing an order, the navigation stack is properly reset.

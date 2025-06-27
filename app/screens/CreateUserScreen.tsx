@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, ScrollView, Alert, SafeAreaView } from 'react-native';
+import { View, ScrollView, Alert, SafeAreaView, Platform } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
@@ -16,7 +16,7 @@ import {
 import { RootState, AppDispatch } from '../store/store';
 import { createUser } from '../store/user/userSlice';
 import { User } from '../types/types';
-import { commonStyles, formStyles } from '../styles';
+import { commonStyles, formStyles, createThemedStyles } from '../styles';
 
 export default function CreateUserScreen() {
   const theme = useTheme();
@@ -127,12 +127,15 @@ export default function CreateUserScreen() {
     }
   };
 
+  const themedStyles = createThemedStyles(theme);
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
-      <ScrollView style={[commonStyles.container, { backgroundColor: theme.colors.background }]}>
-      <Text variant="headlineMedium" style={commonStyles.title}>
-        Create New User
-      </Text>
+    <SafeAreaView style={[commonStyles.containerNoPadding, themedStyles.background]}>
+      <View style={[commonStyles.safeContainer, themedStyles.background]}>
+        <ScrollView style={[commonStyles.container, themedStyles.background]}>
+          <Text variant="headlineMedium" style={commonStyles.title}>
+            Create New User
+          </Text>
       
       <Card style={commonStyles.card} mode="outlined">
         <Card.Content>
@@ -287,8 +290,9 @@ export default function CreateUserScreen() {
         Create User
       </Button>
       
-      <View style={commonStyles.bottomSpacing} />
-      </ScrollView>
+        <View style={commonStyles.bottomSpacing} />
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }
