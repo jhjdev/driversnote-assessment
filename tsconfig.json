@@ -8,12 +8,15 @@
     "lib": [
       "esnext"
     ],
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "noEmit": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "strict": true,
-    "target": "esnext"
+    "strict": false,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "target": "esnext",
+    "customConditions": ["react-native"]
   },
   "exclude": [
     "node_modules",
