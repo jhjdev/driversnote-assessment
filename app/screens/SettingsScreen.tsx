@@ -8,7 +8,7 @@ interface SettingsScreenProps {
   toggleDarkMode: () => void;
 }
 
-export default function SettingsScreen ({ isDarkMode, toggleDarkMode }: SettingsScreenProps) {
+export default function SettingsScreen({ isDarkMode, toggleDarkMode }: SettingsScreenProps) {
   const theme = useTheme();
   const themedStyles = createThemedStyles(theme);
 

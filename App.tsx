@@ -12,7 +12,7 @@ import { ThemeProvider, useAppTheme } from './app/context/ThemeContext';
 import TabNavigator from './app/navigation/TabNavigator';
 import { store, persistor } from './app/store/store';
 
-function AppContent (): React.JSX.Element {
+function AppContent(): React.JSX.Element {
   const { theme, isDarkMode } = useAppTheme();
 
   return (
@@ -25,7 +25,7 @@ function AppContent (): React.JSX.Element {
   );
 }
 
-export default function App (): React.JSX.Element {
+export default function App(): React.JSX.Element {
   return (
     <Provider store={store}>
       <PersistGate

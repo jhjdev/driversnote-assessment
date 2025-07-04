@@ -7,7 +7,7 @@ import { RootState, AppDispatch } from '../store/store';
 import { fetchReceipts, deleteReceipt, addMockReceipts } from '../store/receipts/receiptsSlice';
 import { formatPrice } from '../data/Price';
 
-export default function ReceiptsScreen () {
+export default function ReceiptsScreen() {
   const theme = useTheme();
   const dispatch = useDispatch<AppDispatch>();
   const { receipts, loading, error } = useSelector((state: RootState) => state.receipts);

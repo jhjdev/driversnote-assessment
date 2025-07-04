@@ -10,7 +10,7 @@ class MongoDBService {
   private database: string;
   private apiKey: string;
 
-  constructor () {
+  constructor() {
     // Parse MongoDB connection for Data API
     const uri = MONGODB_URI || '';
     const dbName = MONGODB_DB_NAME || 'driversnote';
@@ -40,7 +40,7 @@ class MongoDBService {
   /**
    * Make HTTP request to backend API with retry logic
    */
-  private async makeRequest<T> (
+  private async makeRequest<T>(
     endpoint: string,
     options?: RequestInit,
     retries = 3,
@@ -86,14 +86,14 @@ class MongoDBService {
   /**
    * Get all users from MongoDB
    */
-  async getUsers (): Promise<User[]> {
+  async getUsers(): Promise<User[]> {
     return this.makeRequest<User[]>('/users');
   }
 
   /**
    * Get single user by ID
    */
-  async getUserById (id: number): Promise<User | null> {
+  async getUserById(id: number): Promise<User | null> {
     try {
       return await this.makeRequest<User>(`/users/${id}`);
     } catch (error) {
@@ -105,7 +105,7 @@ class MongoDBService {
   /**
    * Create new user
    */
-  async createUser (userData: Omit<User, 'id'>): Promise<User> {
+  async createUser(userData: Omit<User, 'id'>): Promise<User> {
     return this.makeRequest<User>('/users', {
       method: 'POST',
       body: JSON.stringify(userData),
@@ -115,7 +115,7 @@ class MongoDBService {
   /**
    * Update user
    */
-  async updateUser (id: number, userData: Partial<User>): Promise<User> {
+  async updateUser(id: number, userData: Partial<User>): Promise<User> {
     return this.makeRequest<User>(`/users/${id}`, {
       method: 'PUT',
       body: JSON.stringify(userData),
@@ -125,7 +125,7 @@ class MongoDBService {
   /**
    * Delete user
    */
-  async deleteUser (id: number): Promise<{ success: boolean }> {
+  async deleteUser(id: number): Promise<{ success: boolean }> {
     return this.makeRequest<{ success: boolean }>(`/users/${id}`, {
       method: 'DELETE',
     });
@@ -134,7 +134,7 @@ class MongoDBService {
   /**
    * Initialize users collection if needed
    */
-  async initializeUsers (users: User[]): Promise<{ success: boolean }> {
+  async initializeUsers(users: User[]): Promise<{ success: boolean }> {
     return this.makeRequest<{ success: boolean }>('/users/initialize', {
       method: 'POST',
       body: JSON.stringify({ users }),
@@ -144,14 +144,14 @@ class MongoDBService {
   /**
    * Get all receipts from MongoDB
    */
-  async getReceipts (): Promise<Receipt[]> {
+  async getReceipts(): Promise<Receipt[]> {
     return this.makeRequest<Receipt[]>('/receipts');
   }
 
   /**
    * Create new receipt
    */
-  async createReceipt (receiptData: Omit<Receipt, 'id' | 'timestamp'>): Promise<Receipt> {
+  async createReceipt(receiptData: Omit<Receipt, 'id' | 'timestamp'>): Promise<Receipt> {
     return this.makeRequest<Receipt>('/receipts', {
       method: 'POST',
       body: JSON.stringify(receiptData),
@@ -161,7 +161,7 @@ class MongoDBService {
   /**
    * Delete receipt
    */
-  async deleteReceipt (id: string): Promise<{ success: boolean }> {
+  async deleteReceipt(id: string): Promise<{ success: boolean }> {
     return this.makeRequest<{ success: boolean }>(`/receipts/${id}`, {
       method: 'DELETE',
     });

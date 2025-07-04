@@ -13,13 +13,13 @@ export const apiSlice = createApi({
   endpoints: (builder) => ({
     // Get all users
     getUsers: builder.query<User[], void>({
-      queryFn: async (_, { dispatch }) => {
+      queryFn: async(_, { dispatch: _dispatch }) => {
         try {
           // We're using our existing middleware for now, but this could be replaced
           // with direct MongoDB calls or other API calls in the future
           const users = await fetchMiddleware.fetchAllUsers();
           return { data: users };
-        } catch (error) {
+        } catch {
           return {
             error: {
               status: 'CUSTOM_ERROR',
@@ -39,7 +39,7 @@ export const apiSlice = createApi({
 
     // Get user by ID
     getUserById: builder.query<User, number>({
-      queryFn: async (userId, { dispatch }) => {
+      queryFn: async(userId, { dispatch: _dispatch }) => {
         try {
           const user = await fetchMiddleware.fetchUserById(userId);
           if (!user) {
@@ -51,7 +51,7 @@ export const apiSlice = createApi({
             };
           }
           return { data: user };
-        } catch (error) {
+        } catch {
           return {
             error: {
               status: 'CUSTOM_ERROR',
@@ -69,7 +69,9 @@ export const apiSlice = createApi({
         url: `https://633ab21ae02b9b64c6151a44.mockapi.io/api/v2/experiments/${userId}`,
         method: 'GET',
       }),
-      providesTags: (result, error, userId) => [{ type: 'Experiment', id: userId }],
+      providesTags: (result, error, userId) => [
+        { type: 'Experiment', id: userId },
+      ],
     }),
 
     // Get beacon prices
@@ -82,18 +84,28 @@ export const apiSlice = createApi({
     }),
 
     // Get beacon price for specific user
-    getUserBeaconPrice: builder.query<number, { userId: string, countryId: string }>({
-      async queryFn ({ userId, countryId }, { dispatch, getState }, _extraOptions, fetchWithBQ) {
+    getUserBeaconPrice: builder.query<
+      number,
+      { userId: string; countryId: string }
+    >({
+      async queryFn(
+        { userId, countryId },
+        { dispatch: _dispatch, getState: _getState },
+        _extraOptions,
+        fetchWithBQ,
+      ) {
         try {
           // Get user experiment data
-          const experimentResult = await fetchWithBQ(`https://633ab21ae02b9b64c6151a44.mockapi.io/api/v2/experiments/${userId}`);
+          const experimentResult = await fetchWithBQ(
+            `https://633ab21ae02b9b64c6151a44.mockapi.io/api/v2/experiments/${userId}`,
+          );
           if (experimentResult.error) {
             return { error: experimentResult.error };
           }
 
           const experimentData = experimentResult.data as ExperimentData;
           const variant = experimentData.experiments.find(
-            exp => exp.experiment === 'beacon_price',
+            (exp) => exp.experiment === 'beacon_price',
           )?.variant;
 
           if (!variant) {
@@ -106,13 +118,17 @@ export const apiSlice = createApi({
           }
 
           // Get price data
-          const priceResult = await fetchWithBQ('https://633ab21ae02b9b64c6151a44.mockapi.io/api/v2/BeaconPrice');
+          const priceResult = await fetchWithBQ(
+            'https://633ab21ae02b9b64c6151a44.mockapi.io/api/v2/BeaconPrice',
+          );
           if (priceResult.error) {
             return { error: priceResult.error };
           }
 
           const priceData = priceResult.data as BeaconPrice[];
-          const priceInfo = priceData.find(item => item.country_id === countryId);
+          const priceInfo = priceData.find(
+            (item) => item.country_id === countryId,
+          );
 
           if (!priceInfo) {
             return {
@@ -131,7 +147,7 @@ export const apiSlice = createApi({
           const price = priceInfo[priceKey as keyof BeaconPrice] as number;
 
           return { data: price };
-        } catch (error) {
+        } catch {
           return {
             error: {
               status: 'CUSTOM_ERROR',

@@ -18,7 +18,7 @@ import { createUser } from '../store/user/userSlice';
 import { User } from '../types/types';
 import { commonStyles, formStyles, createThemedStyles } from '../styles';
 
-export default function CreateUserScreen () {
+export default function CreateUserScreen() {
   const theme = useTheme();
   const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation();
@@ -52,7 +52,7 @@ export default function CreateUserScreen () {
     );
   };
 
-  const handleCreateUser = async () => {
+  const handleCreateUser = async() => {
     // Reset errors
     setNameError('');
     setEmailError('');

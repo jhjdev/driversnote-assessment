@@ -15,7 +15,7 @@ type DeliveryNavigationProp = StackNavigationProp<
   'OrderOverview'
 >;
 
-export default function DeliveryScreen ({ route }: DeliveryScreenProps) {
+export default function DeliveryScreen({ route }: DeliveryScreenProps) {
   const theme = useTheme();
   const navigation = useNavigation<DeliveryNavigationProp>();
   const { order, userId } = route.params;

@@ -8,7 +8,7 @@ import { fetchUsers } from '../store/user/userSlice';
 import { fetchReceipts } from '../store/receipts/receiptsSlice';
 import { formatPrice } from '../data/Price';
 
-export default function StatsScreen () {
+export default function StatsScreen() {
   const theme = useTheme();
   const themedStyles = createThemedStyles(theme);
   const dispatch = useDispatch<AppDispatch>();

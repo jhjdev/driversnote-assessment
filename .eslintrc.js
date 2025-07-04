@@ -1,9 +1,6 @@
 module.exports = {
   root: true,
-  extends: [
-    'eslint:recommended',
-    'standard',
-  ],
+  extends: ['eslint:recommended', 'standard'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
@@ -12,18 +9,17 @@ module.exports = {
     ecmaVersion: 2020,
     sourceType: 'module',
   },
-  plugins: [
-    'react',
-    'react-hooks',
-    '@typescript-eslint',
-  ],
+  plugins: ['react', 'react-hooks', '@typescript-eslint'],
   rules: {
     // TypeScript rules
-    '@typescript-eslint/no-unused-vars': ['warn', {
-      argsIgnorePattern: '^_',
-      varsIgnorePattern: '^_',
-      ignoreRestSiblings: true,
-    }],
+    '@typescript-eslint/no-unused-vars': [
+      'warn',
+      {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        ignoreRestSiblings: true,
+      },
+    ],
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'warn',
@@ -50,6 +46,9 @@ module.exports = {
 
     // Import rules
     'import/no-duplicates': 'warn',
+
+    // Use standard's space-before-function-paren rule (no spaces)
+    'space-before-function-paren': ['error', 'never'],
   },
   settings: {
     react: {

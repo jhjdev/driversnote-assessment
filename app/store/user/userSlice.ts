@@ -5,7 +5,7 @@ import { fetchMiddleware } from '../../services/fetchMiddleware';
 // Async thunks
 export const fetchUsers = createAsyncThunk(
   'user/fetchUsers',
-  async (_, { rejectWithValue }) => {
+  async(_, { rejectWithValue }) => {
     try {
       const users = await fetchMiddleware.fetchAllUsers();
       return users;
@@ -17,7 +17,7 @@ export const fetchUsers = createAsyncThunk(
 
 export const fetchUserById = createAsyncThunk(
   'user/fetchUserById',
-  async (userId: number, { rejectWithValue }) => {
+  async(userId: number, { rejectWithValue }) => {
     try {
       const user = await fetchMiddleware.fetchUserById(userId);
       if (!user) {
@@ -32,7 +32,7 @@ export const fetchUserById = createAsyncThunk(
 
 export const createUser = createAsyncThunk(
   'user/createUser',
-  async (userData: Omit<User, 'id'>, { rejectWithValue }) => {
+  async(userData: Omit<User, 'id'>, { rejectWithValue }) => {
     try {
       const newUser = await fetchMiddleware.createUser(userData);
       return newUser;
@@ -44,7 +44,7 @@ export const createUser = createAsyncThunk(
 
 export const updateUser = createAsyncThunk(
   'user/updateUser',
-  async ({ id, userData }: { id: number; userData: Partial<User> }, { rejectWithValue }) => {
+  async({ id, userData }: { id: number; userData: Partial<User> }, { rejectWithValue }) => {
     try {
       const updatedUser = await fetchMiddleware.updateUser(id, userData);
       return updatedUser;
@@ -56,7 +56,7 @@ export const updateUser = createAsyncThunk(
 
 export const deleteUser = createAsyncThunk(
   'user/deleteUser',
-  async (userId: number, { rejectWithValue }) => {
+  async(userId: number, { rejectWithValue }) => {
     try {
       await fetchMiddleware.deleteUser(userId);
       return userId;

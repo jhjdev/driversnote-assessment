@@ -1,29 +1,30 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useTheme } from 'react-native-paper';
-import { useNavigation, useNavigationState, CommonActions } from '@react-navigation/native';
 
 // Import screens
 import UsersScreen from '../screens/UsersScreen';
 import BeaconsScreen from '../screens/BeaconsScreen';
 import DeliveryScreen from '../screens/DeliveryScreen';
 import OrderOverviewScreen from '../screens/OrderOverviewScreen';
+import { Order } from '../types/types';
 
 // Define the stack param list
 export type UserStackParamList = {
   UsersList: undefined;
   Beacons: { userId: number };
-  Delivery: { order: any; userId: number };
-  OrderOverview: { order: any; userId: number };
+  Delivery: { order: Order; userId: number };
+  OrderOverview: { order: Order; userId: number };
 };
 
 const Stack = createStackNavigator<UserStackParamList>();
 
-export default function UserStackNavigator () {
+export default function UserStackNavigator() {
   const theme = useTheme();
 
   return (
     <Stack.Navigator
+      id={undefined}
       initialRouteName="UsersList"
       screenOptions={{
         headerStyle: {
@@ -33,7 +34,6 @@ export default function UserStackNavigator () {
         headerTitleStyle: {
           fontWeight: 'bold',
         },
-        headerBackTitleVisible: false,
       }}
     >
       <Stack.Screen

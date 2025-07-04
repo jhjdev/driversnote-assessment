@@ -7,7 +7,7 @@ export class UserService {
   /**
    * Initialize the users collection with sample data if it's empty
    */
-  async initializeUsers (): Promise<void> {
+  async initializeUsers(): Promise<void> {
     try {
       // Check if users exist via API
       const users = await this.getAllUsers();
@@ -25,7 +25,7 @@ export class UserService {
   /**
    * Get all users
    */
-  async getAllUsers (): Promise<User[]> {
+  async getAllUsers(): Promise<User[]> {
     try {
       return await apiService.getCollection<User>(this.COLLECTION_NAME);
     } catch (error) {
@@ -37,7 +37,7 @@ export class UserService {
   /**
    * Get user by ID
    */
-  async getUserById (id: number): Promise<User | null> {
+  async getUserById(id: number): Promise<User | null> {
     try {
       return await apiService.getDocumentById<User>(this.COLLECTION_NAME, id);
     } catch (error) {
@@ -49,7 +49,7 @@ export class UserService {
   /**
    * Create a new user
    */
-  async createUser (user: Omit<User, 'id'>): Promise<User> {
+  async createUser(user: Omit<User, 'id'>): Promise<User> {
     try {
       return await apiService.createDocument<User>(this.COLLECTION_NAME, user);
     } catch (error) {
@@ -61,7 +61,7 @@ export class UserService {
   /**
    * Update an existing user
    */
-  async updateUser (id: number, userData: Partial<User>): Promise<User | null> {
+  async updateUser(id: number, userData: Partial<User>): Promise<User | null> {
     try {
       const updatedUser = await apiService.updateDocument<User>(this.COLLECTION_NAME, id, userData);
       return updatedUser;
@@ -74,7 +74,7 @@ export class UserService {
   /**
    * Delete a user
    */
-  async deleteUser (id: number): Promise<boolean> {
+  async deleteUser(id: number): Promise<boolean> {
     try {
       const result = await apiService.deleteDocument(this.COLLECTION_NAME, id);
       return result.success;

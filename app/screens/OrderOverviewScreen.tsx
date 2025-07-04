@@ -12,14 +12,14 @@ interface OrderOverviewScreenProps {
   route: RouteProp<{ params: { order: any; userId: number } }, 'params'>;
 }
 
-export default function OrderOverviewScreen ({ route }: OrderOverviewScreenProps) {
+export default function OrderOverviewScreen({ route }: OrderOverviewScreenProps) {
   const theme = useTheme();
   const navigation = useNavigation();
   const dispatch = useDispatch<AppDispatch>();
   const { order, userId } = route.params;
   const { deliveryAddress } = order;
 
-  const handleConfirmOrder = async () => {
+  const handleConfirmOrder = async() => {
     try {
       // Create receipt data in MongoDB format
       const receiptData = {

@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { Receipt } from '../../types/types';
 import { mongodbService } from '../../services/mongodb.service';
 
@@ -28,36 +28,45 @@ export interface ReceiptData {
 // Async thunks
 export const fetchReceipts = createAsyncThunk(
   'receipts/fetchReceipts',
-  async (_, { rejectWithValue }) => {
+  async(_, { rejectWithValue }) => {
     try {
       const receipts = await mongodbService.getReceipts();
       return receipts;
     } catch (error) {
-      return rejectWithValue(error instanceof Error ? error.message : 'Failed to fetch receipts');
+      return rejectWithValue(
+        error instanceof Error ? error.message : 'Failed to fetch receipts',
+      );
     }
   },
 );
 
 export const createReceipt = createAsyncThunk(
   'receipts/createReceipt',
-  async (receiptData: Omit<Receipt, 'id' | 'timestamp'>, { rejectWithValue }) => {
+  async(
+    receiptData: Omit<Receipt, 'id' | 'timestamp'>,
+    { rejectWithValue },
+  ) => {
     try {
       const newReceipt = await mongodbService.createReceipt(receiptData);
       return newReceipt;
     } catch (error) {
-      return rejectWithValue(error instanceof Error ? error.message : 'Failed to create receipt');
+      return rejectWithValue(
+        error instanceof Error ? error.message : 'Failed to create receipt',
+      );
     }
   },
 );
 
 export const deleteReceipt = createAsyncThunk(
   'receipts/deleteReceipt',
-  async (receiptId: string, { rejectWithValue }) => {
+  async(receiptId: string, { rejectWithValue }) => {
     try {
       await mongodbService.deleteReceipt(receiptId);
       return receiptId;
     } catch (error) {
-      return rejectWithValue(error instanceof Error ? error.message : 'Failed to delete receipt');
+      return rejectWithValue(
+        error instanceof Error ? error.message : 'Failed to delete receipt',
+      );
     }
   },
 );
@@ -141,7 +150,7 @@ const receiptsSlice = createSlice({
       .addCase(fetchReceipts.fulfilled, (state, action) => {
         state.loading = false;
         // Convert Receipt[] to ReceiptData[] format for compatibility
-        state.receipts = action.payload.map(receipt => ({
+        state.receipts = action.payload.map((receipt) => ({
           id: receipt.id,
           userId: receipt.userId,
           userName: receipt.userName,
@@ -212,7 +221,9 @@ const receiptsSlice = createSlice({
       })
       .addCase(deleteReceipt.fulfilled, (state, action) => {
         state.loading = false;
-        state.receipts = state.receipts.filter(receipt => receipt.id !== action.payload);
+        state.receipts = state.receipts.filter(
+          (receipt) => receipt.id !== action.payload,
+        );
       })
       .addCase(deleteReceipt.rejected, (state, action) => {
         state.loading = false;

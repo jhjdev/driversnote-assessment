@@ -1,6 +1,9 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {
+  createBottomTabNavigator,
+  BottomTabBarProps,
+} from '@react-navigation/bottom-tabs';
 import { FAB, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -16,21 +19,13 @@ import { useAppTheme } from '../context/ThemeContext';
 
 const Tab = createBottomTabNavigator();
 
-interface TabBarIconProps {
-  focused: boolean;
-  color: string;
-  size: number;
-}
-
-function CustomTabBar ({ state, descriptors, navigation }: any) {
+function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const theme = useTheme();
-  const { isDarkMode } = useAppTheme();
 
   return (
     <View style={[styles.tabBar, { backgroundColor: theme.colors.surface }]}>
-      {state.routes.map((route: any, index: number) => {
+      {state.routes.map((route, index: number) => {
         const { options } = descriptors[route.key];
-        const label = options.tabBarLabel !== undefined ? options.tabBarLabel : route.name;
         const isFocused = state.index === index;
 
         // Skip the middle tab (CreateUser) as it will be replaced with FAB
@@ -88,14 +83,15 @@ function CustomTabBar ({ state, descriptors, navigation }: any) {
             accessibilityRole="button"
             accessibilityState={isFocused ? { selected: true } : {}}
             accessibilityLabel={options.tabBarAccessibilityLabel}
-            testID={options.tabBarTestID}
             onPress={onPress}
             style={styles.tabItem}
           >
             <Icon
               name={getIconName(route.name, isFocused)}
               size={24}
-              color={isFocused ? theme.colors.primary : theme.colors.onSurfaceVariant}
+              color={
+                isFocused ? theme.colors.primary : theme.colors.onSurfaceVariant
+              }
             />
           </TouchableOpacity>
         );
@@ -104,12 +100,13 @@ function CustomTabBar ({ state, descriptors, navigation }: any) {
   );
 }
 
-export default function TabNavigator () {
+export default function TabNavigator() {
   const { isDarkMode, toggleDarkMode } = useAppTheme();
 
   return (
     <Tab.Navigator
-      tabBar={props => <CustomTabBar {...props} />}
+      id={undefined}
+      tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{
         headerShown: false,
       }}
@@ -148,7 +145,12 @@ export default function TabNavigator () {
           tabBarLabel: 'Settings',
         }}
       >
-        {() => <SettingsScreen isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />}
+        {() => (
+          <SettingsScreen
+            isDarkMode={isDarkMode}
+            toggleDarkMode={toggleDarkMode}
+          />
+        )}
       </Tab.Screen>
     </Tab.Navigator>
   );

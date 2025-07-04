@@ -8,7 +8,7 @@ import { fetchUsers, updateUser, deleteUser, selectUser, setSelectedUser } from 
 import { User } from '../types/types';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { commonStyles, userCardStyles, textStyles, createThemedStyles } from '../styles';
-export default function UsersScreen () {
+export default function UsersScreen() {
   const theme = useTheme();
   const themedStyles = createThemedStyles(theme);
   const dispatch = useDispatch<AppDispatch>();

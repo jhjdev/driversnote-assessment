@@ -106,7 +106,7 @@ const darkTheme = {
   },
 };
 
-export function ThemeProvider ({ children }: { children: React.ReactNode }) {
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const systemColorScheme = useColorScheme();
   const [isDarkMode, setIsDarkMode] = useState(systemColorScheme === 'dark');
 
@@ -127,7 +127,7 @@ export function ThemeProvider ({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function useAppTheme () {
+export function useAppTheme() {
   const context = useContext(ThemeContext);
   if (context === undefined) {
     throw new Error('useAppTheme must be used within a ThemeProvider');
