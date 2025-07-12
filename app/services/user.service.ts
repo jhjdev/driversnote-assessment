@@ -1,9 +1,7 @@
-import { apiService } from '../services/mongodb.service';
+import { mongodbService } from '../services/mongodb.service';
 import { User } from '../types/types';
 
 export class UserService {
-  private readonly COLLECTION_NAME = 'users';
-
   /**
    * Initialize the users collection with sample data if it's empty
    */
@@ -13,7 +11,7 @@ export class UserService {
       const users = await this.getAllUsers();
       if (users.length === 0) {
         // Initialize with sample users via API
-        await apiService.initializeCollection(this.COLLECTION_NAME, SAMPLE_USERS);
+        await mongodbService.initializeUsers(SAMPLE_USERS);
         console.log('Sample users initialized via API');
       }
     } catch (error) {
@@ -27,7 +25,7 @@ export class UserService {
    */
   async getAllUsers(): Promise<User[]> {
     try {
-      return await apiService.getCollection<User>(this.COLLECTION_NAME);
+      return await mongodbService.getUsers();
     } catch (error) {
       console.error('Error getting users:', error);
       throw error;
@@ -39,7 +37,7 @@ export class UserService {
    */
   async getUserById(id: number): Promise<User | null> {
     try {
-      return await apiService.getDocumentById<User>(this.COLLECTION_NAME, id);
+      return await mongodbService.getUserById(id);
     } catch (error) {
       console.error(`Error getting user with ID ${id}:`, error);
       throw error;
@@ -51,7 +49,7 @@ export class UserService {
    */
   async createUser(user: Omit<User, 'id'>): Promise<User> {
     try {
-      return await apiService.createDocument<User>(this.COLLECTION_NAME, user);
+      return await mongodbService.createUser(user);
     } catch (error) {
       console.error('Error creating user:', error);
       throw error;
@@ -63,7 +61,7 @@ export class UserService {
    */
   async updateUser(id: number, userData: Partial<User>): Promise<User | null> {
     try {
-      const updatedUser = await apiService.updateDocument<User>(this.COLLECTION_NAME, id, userData);
+      const updatedUser = await mongodbService.updateUser(id, userData);
       return updatedUser;
     } catch (error) {
       console.error(`Error updating user with ID ${id}:`, error);
@@ -76,7 +74,7 @@ export class UserService {
    */
   async deleteUser(id: number): Promise<boolean> {
     try {
-      const result = await apiService.deleteDocument(this.COLLECTION_NAME, id);
+      const result = await mongodbService.deleteUser(id);
       return result.success;
     } catch (error) {
       console.error(`Error deleting user with ID ${id}:`, error);

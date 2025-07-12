@@ -24,7 +24,7 @@ export interface BeaconPrice {
 export interface User {
   id: number;
   full_name: string;
-  tag: string;
+  tag?: string; // Optional field for internal use
   discount?: number; // Discount percentage (0-100)
   address1?: string | null;
   address2?: string | null;

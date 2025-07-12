@@ -1,39 +1,19 @@
-import { MONGODB_URI, MONGODB_DB_NAME } from '@env';
+import { API_BASE_URL, API_KEY } from '@env';
 import { User, Receipt } from '../types/types';
-import { Platform } from 'react-native';
 
-// MongoDB Data API service for hosted database access
+// API service for hosted database access
 class MongoDBService {
   private apiEndpoint: string;
-  private appId: string;
-  private dataSource: string;
-  private database: string;
   private apiKey: string;
 
   constructor() {
-    // Parse MongoDB connection for Data API
-    const uri = MONGODB_URI || '';
-    const dbName = MONGODB_DB_NAME || 'driversnote';
-
-    // Extract cluster info from URI
-    const clusterMatch = uri.match(/@([^.]+)/);
-    const clusterName = clusterMatch ? clusterMatch[1] : 'driversnote';
-
-    // MongoDB Data API configuration
-    // For now, we'll use a simple HTTP API approach
-    this.appId = 'data-endpoint';
-    // Use platform-specific endpoint: Android emulator uses 10.0.2.2 to access host
-    const baseUrl = Platform.OS === 'android' ? 'http://10.0.2.2:4000' : 'http://localhost:4000';
-    this.apiEndpoint = `${baseUrl}/api`;
-    this.dataSource = clusterName;
-    this.database = dbName;
-    this.apiKey = '';
+    // Use the hosted API endpoint
+    this.apiEndpoint = API_BASE_URL || 'https://driversnote-assessment-api.onrender.com/api';
+    this.apiKey = API_KEY || '';
 
     console.log('MongoDB Service initialized with:', {
-      database: this.database,
-      dataSource: this.dataSource,
       endpoint: this.apiEndpoint,
-      hasUri: !!MONGODB_URI,
+      hasApiKey: !!this.apiKey,
     });
   }
 
@@ -50,11 +30,24 @@ class MongoDBService {
         console.log(
           `Making request to: ${this.apiEndpoint}${endpoint} (attempt ${attempt}/${retries})`,
         );
+        const headers: Record<string, string> = {
+          'Content-Type': 'application/json',
+          ...options?.headers,
+        };
+
+        // Only add API key header if we have one
+        if (this.apiKey) {
+          headers['X-API-Key'] = this.apiKey;
+        }
+
+        console.log('Request headers:', {
+          hasApiKey: !!headers['X-API-Key'],
+          apiKeyPreview: headers['X-API-Key'] ? headers['X-API-Key'].substring(0, 10) + '...' : 'none',
+          contentType: headers['Content-Type'],
+        });
+
         const response = await fetch(`${this.apiEndpoint}${endpoint}`, {
-          headers: {
-            'Content-Type': 'application/json',
-            ...options?.headers,
-          },
+          headers,
           ...options,
         });
 

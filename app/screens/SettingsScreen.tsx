@@ -111,17 +111,15 @@ export default function SettingsScreen({ isDarkMode, toggleDarkMode }: SettingsS
           />
           <Divider />
           <List.Item
-            title="Terms of Service"
-            description="View terms and conditions"
-            left={(props) => <List.Icon {...props} icon="file-document" />}
-            right={(props) => <List.Icon {...props} icon="chevron-right" />}
+            title="Author"
+            description="Jon Hnefill Jakobsson"
+            left={(props) => <List.Icon {...props} icon="account" />}
           />
           <Divider />
           <List.Item
-            title="Privacy Policy"
-            description="View privacy policy"
-            left={(props) => <List.Icon {...props} icon="shield-account" />}
-            right={(props) => <List.Icon {...props} icon="chevron-right" />}
+            title="E-Mail"
+            description="jhj@jhjdev.com"
+            left={(props) => <List.Icon {...props} icon="email" />}
           />
         </Card.Content>
       </Card>

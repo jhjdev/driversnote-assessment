@@ -96,7 +96,7 @@ jobs:
       - name: Expo doctor check
         run: |
           echo "🩺 Running Expo doctor..."
-          npx expo doctor || true
+          npx expo-doctor || true
           echo "✅ Expo configuration checked"
           
       - name: Validate app.json/app.config.js

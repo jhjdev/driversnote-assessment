@@ -73,6 +73,10 @@ export default function UsersScreen() {
         userData: {
           full_name: editedName.trim(),
           tag: editedTag.trim() || 'user',
+          address1: editedAddress1.trim() || null,
+          city: editedCity.trim() || null,
+          postal_code: editedPostalCode.trim() ? (isNaN(Number(editedPostalCode)) ? editedPostalCode.trim() : Number(editedPostalCode)) : null,
+          country_name: editedCountryName.trim() || null,
         },
       }));
       setShowEditDialog(false);
@@ -85,6 +89,10 @@ export default function UsersScreen() {
     setEditingUser(null);
     setEditedName('');
     setEditedTag('');
+    setEditedAddress1('');
+    setEditedCity('');
+    setEditedPostalCode('');
+    setEditedCountryName('');
   };
 
   if (loading) {

@@ -106,7 +106,7 @@ jobs:
       - name: Run Expo doctor after updates
         run: |
           echo "🩺 Running Expo doctor after potential updates..."
-          npx expo doctor || {
+          npx expo-doctor || {
             echo "⚠️  Expo doctor found issues after updates"
             exit 1
           }

@@ -83,7 +83,7 @@ jobs:
       - name: Check Expo build
         run: |
           npx expo install --fix
-          npx expo doctor || echo "Expo doctor warnings detected but continuing..."
+          npx expo-doctor || echo "Expo doctor warnings detected but continuing..."
         continue-on-error: true
 
   security:

@@ -22,22 +22,23 @@ This project is a complete mobile application built with React Native and Expo t
 - ✅ Material Design 3 theming with dark/light mode
 - ✅ Navigation flow fixes and proper stack management
 - ✅ TypeScript strict configuration
-- ✅ Express.js backend with MongoDB integration
+- ✅ Hosted API backend with MongoDB integration
 - ✅ Redux Toolkit state management
 - ✅ Consistent safe area handling across Android/iOS
 - ✅ Centralized and consistent style system
 - ✅ Navigation stack reset after order completion
+- ✅ API key authentication and security
 
 ## 🛠 Tech Stack
 
-- **Frontend**: React Native with Expo (managed workflow)
+- **Frontend**: React Native with Expo (bare workflow)
 - **Navigation**: React Navigation v6 with nested stack/tab navigators
 - **State Management**: Redux Toolkit with Redux Persist
-- **Database**: MongoDB (hosted on port 4000)
-- **Backend**: Node.js/Express server
+- **API**: Hosted API service on Render.com with MongoDB backend
 - **UI Framework**: React Native Paper (Material Design 3)
 - **Language**: TypeScript (strict configuration)
 - **Development**: Expo CLI, Metro bundler
+- **Backend**: Express.js API hosted on Render.com ([API Repository](https://github.com/jhjdev/driversnote-assessment-api))
 
 ## 📱 Features
 
@@ -97,33 +98,32 @@ This project is a complete mobile application built with React Native and Expo t
    
    Edit the `.env` file with your actual values:
    ```env
-   # MongoDB Configuration
-   MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/
-   MONGODB_DB_NAME=your_database_name
-   PORT=4000
+   # API Configuration
+   API_BASE_URL=https://driversnote-assessment-api.onrender.com/api
+   API_KEY=your-api-key-here
    ```
    
    **Important**: 
-   - Replace `username:password@cluster.mongodb.net/` with your actual MongoDB credentials
-   - Use your own database name (don't use the example database name)
+   - The API is hosted on Render.com and does not require local server setup
+   - API key is required for ALL operations (create, read, update, delete)
+   - Contact the project maintainer for the actual API key
+   - The hosted API is fully functional and ready to use
    - The `.env` file is git-ignored for security
-
-3. **Install server dependencies:**
-   ```bash
-   cd server && npm install && cd ..
-   ```
 
 ### Running the App
 
 ```bash
-# iOS (includes server startup)
+# iOS
 npm run ios
 
-# Android (includes server startup)
+# Android
 npm run android
 
-# Server only
-npm run server
+# Development mode
+npm run dev
+
+# Start app only
+npm start
 ```
 
 ## 📁 Project Structure
@@ -140,7 +140,6 @@ driversnote-assessment/
 │   ├── store/            # Redux store and slices
 │   ├── styles/           # Shared styles and themes
 │   └── types/            # TypeScript type definitions
-├── server/               # Express.js backend server
 ├── assets/               # Static assets (images, icons)
 ├── android/              # Android native code
 ├── ios/                  # iOS native code
@@ -165,11 +164,69 @@ TabNavigator
 
 ## 🌐 API Endpoints
 
+The app connects to a hosted API service on Render.com:
+
+**Base URL**: `https://driversnote-assessment-api.onrender.com/api`  
+**API Repository**: [driversnote-assessment-api](https://github.com/jhjdev/driversnote-assessment-api)
+
+**Public Endpoints** (no authentication required):
+- `GET /` - Root endpoint
 - `GET /api/health` - Health check
+- `GET /docs` - API documentation
+
+**Protected Endpoints** (require X-API-Key header):
 - `GET /api/users` - Get all users
+- `GET /api/users/:id` - Get user by ID
 - `POST /api/users` - Create new user
+- `PUT /api/users/:id` - Update user
+- `DELETE /api/users/:id` - Delete user
 - `GET /api/receipts` - Get all receipts
 - `POST /api/receipts` - Create new receipt
+- `DELETE /api/receipts/:id` - Delete receipt
+
+**Authentication**: All data endpoints require a valid API key sent in the `X-API-Key` header.
+
+**Documentation**: Available at `https://driversnote-assessment-api.onrender.com/docs`
+
+## 🔒 Security
+
+### API Security
+- **Authentication**: All API endpoints (except health check and docs) require API key authentication
+- **API Key**: Must be provided in the `X-API-Key` header for all requests
+- **Rate Limiting**: API includes rate limiting to prevent abuse
+- **CORS**: Configured to allow requests from approved origins
+- **Input Validation**: All inputs are validated and sanitized
+- **Error Handling**: Proper error responses without exposing sensitive information
+
+### Environment Variables
+- **Never commit secrets**: The `.env` file is git-ignored to prevent API key exposure
+- **Environment isolation**: Separate environment variables for development, testing, and production
+- **API key rotation**: API keys should be rotated regularly in production environments
+
+### Best Practices
+- **Secure storage**: API keys are stored securely and never logged
+- **Network security**: All API communications use HTTPS
+- **Data validation**: Input validation on both client and server sides
+- **Error boundaries**: Proper error handling to prevent crashes
+
+### Reporting Security Issues
+
+If you discover a security vulnerability in this project:
+
+1. **Do not** create a public GitHub issue
+2. Email the project maintainer directly with details
+3. Include steps to reproduce the vulnerability
+4. Allow reasonable time for the issue to be addressed
+5. Security issues will be acknowledged within 48 hours
+
+### Supported Versions
+
+This project is part of a technical assessment. Security updates are provided for:
+
+| Version | Supported          |
+| ------- | ------------------ |
+| 1.0.x   | ✅ Current         |
+| < 1.0   | ❌ Not supported   |
 
 ## 🧪 Key Implementation Notes
 
@@ -182,10 +239,11 @@ Implemented centralized styling to ensure consistent title spacing and visibilit
 ### Navigation Reset Fix
 The application includes a fix for navigation stack issues where the order flow would persist after completion. When navigating to Users or Receipts tabs after completing an order, the navigation stack is properly reset.
 
-### MongoDB Integration
-- Uses hosted MongoDB instance on port 4000
-- Includes proper error handling and retry logic
-- No seeding required (uses existing hosted data)
+### API Integration
+- Uses hosted API service with MongoDB backend
+- Includes proper error handling and retry logic with exponential backoff
+- Fallback to sample data when API is unavailable
+- No local database setup required
 
 ### Theme Support
 - Material Design 3 theming
