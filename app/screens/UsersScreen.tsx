@@ -4,7 +4,7 @@ import { Text, Card, List, IconButton, ActivityIndicator, Dialog, TextInput, But
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
-import { fetchUsers, updateUser, deleteUser, selectUser, setSelectedUser } from '../store/user/userSlice';
+import { fetchUsers, updateUser, deleteUser, setSelectedUser } from '../store/user/userSlice';
 import { User } from '../types/types';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { commonStyles, userCardStyles, textStyles, createThemedStyles } from '../styles';
@@ -37,7 +37,7 @@ export default function UsersScreen() {
   const handleUserPress = (user: User) => {
     dispatch(setSelectedUser(user));
     // Navigate to beacon selection screen
-    navigation.navigate('Beacons' as never, { userId: user.id } as never);
+    (navigation as any).navigate('Beacons', { userId: user.id });
   };
 
   const handleEditUser = (user: User) => {

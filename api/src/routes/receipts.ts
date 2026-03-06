@@ -1,12 +1,25 @@
 import { FastifyInstance, FastifyPluginAsync, FastifyRequest, FastifyReply } from 'fastify';
-import { getDatabase } from '../utils/mongodb';
-import { 
-  Receipt, 
+import { getClient } from '../utils/db';
+import {
+  Receipt,
   CreateReceiptRequest,
   receiptSchema,
   createReceiptSchema
 } from '../types';
 import { RouteSchema } from '../types/swagger';
+
+function rowToReceipt(row: Record<string, unknown>): Receipt {
+  return {
+    id: row['id'] as string,
+    userId: row['user_id'] as number,
+    userName: row['user_name'] as string,
+    beaconQuantity: row['beacon_quantity'] as number,
+    discount: row['discount'] as number,
+    deliveryAddress: row['delivery_address'] as string,
+    totalPrice: row['total_price'] as number,
+    timestamp: row['timestamp'] as string,
+  };
+}
 
 const receiptsRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) => {
   // Get all receipts
@@ -25,21 +38,13 @@ const receiptsRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) => {
     } satisfies RouteSchema
   }, async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
     try {
-      const db = getDatabase();
-      const receipts = await db
-        .collection<Receipt>('receipts')
-        .find({})
-        .sort({ timestamp: -1 })
-        .toArray();
-      
-      console.log(`📋 Fetched ${receipts.length} receipts from MongoDB`);
+      const db = getClient();
+      const result = await db.execute('SELECT * FROM receipts ORDER BY timestamp DESC');
+      const receipts = result.rows.map((row) => rowToReceipt(row as unknown as Record<string, unknown>));
       reply.send(receipts);
     } catch (error) {
       console.error('Error fetching receipts:', error);
-      reply.code(500).send({
-        success: false,
-        error: 'Failed to fetch receipts'
-      });
+      reply.code(500).send({ success: false, error: 'Failed to fetch receipts' });
     }
   });
 
@@ -51,31 +56,41 @@ const receiptsRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) => {
       description: 'Create a new receipt',
       security: [{ apiKey: [] }],
       body: createReceiptSchema,
-      response: {
-        201: receiptSchema
-      }
+      response: { 201: receiptSchema }
     } satisfies RouteSchema
   }, async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
     try {
       const receiptData = request.body as CreateReceiptRequest;
-      const db = getDatabase();
+      const db = getClient();
+
+      const id = new Date().getTime().toString();
+      const timestamp = new Date().toISOString();
+
+      await db.execute({
+        sql: `INSERT INTO receipts (id, user_id, user_name, beacon_quantity, discount, delivery_address, total_price, timestamp)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        args: [
+          id,
+          receiptData.userId,
+          receiptData.userName,
+          receiptData.beaconQuantity,
+          receiptData.discount,
+          receiptData.deliveryAddress,
+          receiptData.totalPrice,
+          timestamp,
+        ],
+      });
 
       const newReceipt: Receipt = {
         ...receiptData,
-        id: new Date().getTime().toString(), // Simple ID generation
-        timestamp: new Date().toISOString(),
+        id,
+        timestamp,
       };
 
-      await db.collection<Receipt>('receipts').insertOne(newReceipt);
-      console.log(`🧾 Created new receipt for user: ${newReceipt.userName}`);
-      
       reply.code(201).send(newReceipt);
     } catch (error) {
       console.error('Error creating receipt:', error);
-      reply.code(500).send({
-        success: false,
-        error: 'Failed to create receipt'
-      });
+      reply.code(500).send({ success: false, error: 'Failed to create receipt' });
     }
   });
 
@@ -88,45 +103,32 @@ const receiptsRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) => {
       security: [{ apiKey: [] }],
       params: {
         type: 'object',
-        properties: {
-          id: { type: 'string' }
-        },
+        properties: { id: { type: 'string' } },
         required: ['id']
       },
       response: {
         200: {
           type: 'object',
-          properties: {
-            success: { type: 'boolean' }
-          }
+          properties: { success: { type: 'boolean' } }
         }
       }
     } satisfies RouteSchema
   }, async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
     try {
       const receiptId = (request.params as { id: string }).id;
-      const db = getDatabase();
+      const db = getClient();
 
-      const result = await db
-        .collection<Receipt>('receipts')
-        .deleteOne({ id: receiptId });
+      const result = await db.execute({ sql: 'DELETE FROM receipts WHERE id = ?', args: [receiptId] });
 
-      if (result.deletedCount === 0) {
-        reply.code(404).send({
-          success: false,
-          error: 'Receipt not found'
-        });
+      if (result.rowsAffected === 0) {
+        reply.code(404).send({ success: false, error: 'Receipt not found' });
         return;
       }
 
-      console.log(`🗑️ Deleted receipt with ID: ${receiptId}`);
       reply.send({ success: true });
     } catch (error) {
       console.error('Error deleting receipt:', error);
-      reply.code(500).send({
-        success: false,
-        error: 'Failed to delete receipt'
-      });
+      reply.code(500).send({ success: false, error: 'Failed to delete receipt' });
     }
   });
 };

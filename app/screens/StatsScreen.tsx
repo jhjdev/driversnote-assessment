@@ -95,7 +95,7 @@ export default function StatsScreen() {
       <SafeAreaView style={[commonStyles.containerNoPadding, themedStyles.background]}>
         <View style={[commonStyles.loadingContainer, themedStyles.background]}>
           <ActivityIndicator size="large" color={theme.colors.primary} />
-          <Text variant="bodyLarge" style={commonStyles.loadingText}>
+          <Text variant="bodyLarge" style={{ marginTop: 16, textAlign: 'center' }}>
             Loading statistics...
           </Text>
         </View>
