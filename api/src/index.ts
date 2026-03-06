@@ -1,232 +1,227 @@
 import Fastify from 'fastify';
 import { FastifyInstance } from 'fastify';
 import * as dotenv from 'dotenv';
-import { connectToMongoDB, closeMongoDB, isConnected } from './utils/mongodb';
+import { initializeDb, isConnected, closeDb } from './utils/db';
 import authPlugin from './plugins/auth';
 import usersRoutes from './routes/users';
 import receiptsRoutes from './routes/receipts';
 import { HealthCheckResponse } from './types';
+import type { IncomingMessage, ServerResponse } from 'http';
 
 // Load environment variables
 dotenv.config();
-
-// Create Fastify instance
-const fastify: FastifyInstance = Fastify({
-  logger: {
-    level: process.env['NODE_ENV'] === 'production' ? 'info' : 'debug'
-  }
-});
 
 // Environment configuration
 const config = {
   port: parseInt(process.env['PORT'] || '4000'),
   host: process.env['HOST'] || '0.0.0.0',
-  mongoUri: process.env['MONGODB_URI'] || '',
-  mongoDbName: process.env['MONGODB_DB_NAME'] || 'driversnote',
-  corsOrigin: process.env['CORS_ORIGIN'] || 'http://localhost:3000',
+  corsOrigin: process.env['CORS_ORIGIN'] || '*',
   rateLimitMax: parseInt(process.env['RATE_LIMIT_MAX'] || '100'),
-  rateLimitWindow: parseInt(process.env['RATE_LIMIT_WINDOW'] || '900000') // 15 minutes
+  rateLimitWindow: parseInt(process.env['RATE_LIMIT_WINDOW'] || '900000'),
 };
 
 async function buildApp(): Promise<FastifyInstance> {
-  try {
-    // Register security plugins
-    await fastify.register(import('@fastify/helmet'), {
-      contentSecurityPolicy: {
-        directives: {
-          defaultSrc: ["'self'"],
-          styleSrc: ["'self'", "'unsafe-inline'"],
-          scriptSrc: ["'self'"],
-          imgSrc: ["'self'", "data:", "https:"],
+  const fastify: FastifyInstance = Fastify({
+    logger: {
+      level: process.env['NODE_ENV'] === 'production' ? 'info' : 'debug'
+    }
+  });
+
+  // Initialize Turso database and schema
+  await initializeDb();
+
+  // Register security plugins
+  await fastify.register(import('@fastify/helmet'), {
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'"],
+        imgSrc: ["'self'", "data:", "https:"],
+      },
+    },
+  });
+
+  // Register CORS
+  await fastify.register(import('@fastify/cors'), {
+    origin: config.corsOrigin,
+    credentials: true,
+  });
+
+  // Register rate limiting
+  await fastify.register(import('@fastify/rate-limit'), {
+    max: config.rateLimitMax,
+    timeWindow: config.rateLimitWindow,
+    skipOnError: false,
+    ban: process.env['NODE_ENV'] === 'production' ? 10 : undefined,
+    keyGenerator: (request) => {
+      const forwarded = request.headers['x-forwarded-for'] as string;
+      const realIP = request.headers['x-real-ip'] as string;
+      if (forwarded) return forwarded.split(',')[0].trim();
+      if (realIP) return realIP;
+      return request.socket.remoteAddress || 'unknown';
+    },
+    errorResponseBuilder: (_request, context) => ({
+      error: 'Rate limit exceeded',
+      message: `Too many requests. Limit: ${context.max} per ${Math.round(context.ttl / 1000)} seconds`,
+      retryAfter: Math.round(context.ttl / 1000),
+    }),
+  });
+
+  // Determine Swagger host dynamically
+  const vercelUrl = process.env['VERCEL_URL'];
+  const swaggerHost = vercelUrl || `localhost:${config.port}`;
+  const swaggerSchemes = vercelUrl ? ['https'] : ['http', 'https'];
+
+  // Register Swagger
+  await fastify.register(import('@fastify/swagger'), {
+    swagger: {
+      info: {
+        title: 'Driversnote Assessment API',
+        description: 'API service for Driversnote assessment with Turso database',
+        version: '1.0.0',
+      },
+      host: swaggerHost,
+      schemes: swaggerSchemes,
+      consumes: ['application/json'],
+      produces: ['application/json'],
+      securityDefinitions: {
+        apiKey: {
+          type: 'apiKey',
+          name: 'X-API-Key',
+          in: 'header',
         },
       },
-    });
+      security: [{ apiKey: [] }],
+    },
+  });
 
-    // Register CORS
-    await fastify.register(import('@fastify/cors'), {
-      origin: config.corsOrigin,
-      credentials: true,
-    });
+  // Register Swagger UI
+  await fastify.register(import('@fastify/swagger-ui'), {
+    routePrefix: '/docs',
+    uiConfig: {
+      docExpansion: 'list',
+      deepLinking: false,
+    },
+    staticCSP: true,
+    transformStaticCSP: (header) => header,
+    transformSpecification: (swaggerObject) => swaggerObject,
+    transformSpecificationClone: true,
+  });
 
-    // Register rate limiting with stricter limits for production
-    await fastify.register(import('@fastify/rate-limit'), {
-      max: config.rateLimitMax,
-      timeWindow: config.rateLimitWindow,
-      skipOnError: false,
-      ban: process.env.NODE_ENV === 'production' ? 10 : undefined, // Ban after 10 violations in production
-      keyGenerator: (request) => {
-        // Use IP address for rate limiting
-        const forwarded = request.headers['x-forwarded-for'] as string;
-        const realIP = request.headers['x-real-ip'] as string;
-        
-        if (forwarded) {
-          return forwarded.split(',')[0].trim();
-        }
-        
-        if (realIP) {
-          return realIP;
-        }
-        
-        return request.socket.remoteAddress || 'unknown';
-      },
-      errorResponseBuilder: (request, context) => {
-        return {
-          error: 'Rate limit exceeded',
-          message: `Too many requests. Limit: ${context.max} per ${Math.round(context.ttl / 1000)} seconds`,
-          retryAfter: Math.round(context.ttl / 1000)
-        };
-      }
-    });
+  // Register authentication plugin
+  await fastify.register(authPlugin);
 
-    // Register Swagger
-    await fastify.register(import('@fastify/swagger'), {
-      swagger: {
-        info: {
-          title: 'Driversnote Assessment API',
-          description: 'API service for Driversnote assessment with MongoDB',
-          version: '1.0.0',
-        },
-        host: `localhost:${config.port}`,
-        schemes: ['http', 'https'],
-        consumes: ['application/json'],
-        produces: ['application/json'],
-        securityDefinitions: {
-          apiKey: {
-            type: 'apiKey',
-            name: 'X-API-Key',
-            in: 'header',
-          },
-        },
-        security: [{ apiKey: [] }],
-      },
-    });
-
-    // Register Swagger UI
-    await fastify.register(import('@fastify/swagger-ui'), {
-      routePrefix: '/docs',
-      uiConfig: {
-        docExpansion: 'list',
-        deepLinking: false,
-      },
-      staticCSP: true,
-      transformStaticCSP: (header) => header,
-      transformSpecification: (swaggerObject) => {
-        return swaggerObject;
-      },
-      transformSpecificationClone: true,
-    });
-
-    // Register authentication plugin
-    await fastify.register(authPlugin);
-
-    // Root endpoint - API information (no authentication required)
-    fastify.get('/', {
-      schema: {
-        tags: ['Info'],
-        description: 'API information and available endpoints',
-        response: {
-          200: {
-            type: 'object',
-            properties: {
-              name: { type: 'string' },
-              version: { type: 'string' },
-              description: { type: 'string' },
-              endpoints: {
-                type: 'object',
-                properties: {
-                  health: { type: 'string' },
-                  users: { type: 'string' },
-                  receipts: { type: 'string' },
-                  documentation: { type: 'string' }
-                }
-              },
-              documentation: { type: 'string' },
-              status: { type: 'string' },
-              authentication: { type: 'string' }
-            }
+  // Root endpoint
+  fastify.get('/', {
+    schema: {
+      tags: ['Info'],
+      description: 'API information and available endpoints',
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            name: { type: 'string' },
+            version: { type: 'string' },
+            description: { type: 'string' },
+            endpoints: {
+              type: 'object',
+              properties: {
+                health: { type: 'string' },
+                users: { type: 'string' },
+                receipts: { type: 'string' },
+                documentation: { type: 'string' }
+              }
+            },
+            documentation: { type: 'string' },
+            status: { type: 'string' },
+            authentication: { type: 'string' }
           }
         }
       }
-    }, async () => {
-      return {
-        name: 'Driversnote Assessment API',
-        version: '1.0.0',
-        description: 'A secure API service for managing users and receipts with MongoDB storage',
-        endpoints: {
-          health: '/api/health',
-          users: '/api/users',
-          receipts: '/api/receipts',
-          documentation: '/docs'
-        },
-        documentation: '/docs',
-        status: 'running',
-        authentication: 'API Key required (X-API-Key header) for all endpoints except /api/health and this root endpoint'
-      };
-    });
+    }
+  }, async () => ({
+    name: 'Driversnote Assessment API',
+    version: '1.0.0',
+    description: 'A secure API service for managing users and receipts with Turso database',
+    endpoints: {
+      health: '/api/health',
+      users: '/api/users',
+      receipts: '/api/receipts',
+      documentation: '/docs'
+    },
+    documentation: '/docs',
+    status: 'running',
+    authentication: 'API Key required (X-API-Key header) for all endpoints except /api/health and this root endpoint'
+  }));
 
-    // Health check endpoint (no authentication required)
-    fastify.get('/api/health', {
-      schema: {
-        tags: ['Health'],
-        description: 'Health check endpoint',
-        response: {
-          200: {
-            type: 'object',
-            properties: {
-              status: { type: 'string' },
-              timestamp: { type: 'string' },
-              database: { type: 'string' },
-              version: { type: 'string' },
-            },
+  // Health check endpoint
+  fastify.get('/api/health', {
+    schema: {
+      tags: ['Health'],
+      description: 'Health check endpoint',
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            status: { type: 'string' },
+            timestamp: { type: 'string' },
+            database: { type: 'string' },
+            version: { type: 'string' },
           },
         },
       },
-    }, async () => {
-      const healthResponse: HealthCheckResponse = {
-        status: 'ok',
-        timestamp: new Date().toISOString(),
-        database: isConnected() ? 'connected' : 'disconnected',
-        version: process.env['npm_package_version'] || '1.0.0',
-      };
-      
-      return healthResponse;
-    });
+    },
+  }, async () => {
+    const healthResponse: HealthCheckResponse = {
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      database: isConnected() ? 'connected' : 'disconnected',
+      version: process.env['npm_package_version'] || '1.0.0',
+    };
+    return healthResponse;
+  });
 
-    // Register API routes
-    await fastify.register(usersRoutes, { prefix: '/api' });
-    await fastify.register(receiptsRoutes, { prefix: '/api' });
+  // Register API routes
+  await fastify.register(usersRoutes, { prefix: '/api' });
+  await fastify.register(receiptsRoutes, { prefix: '/api' });
 
-    return fastify;
-  } catch (error) {
-    console.error('Error building app:', error);
-    throw error;
-  }
+  return fastify;
 }
+
+// --- Serverless handler for Vercel ---
+
+let appPromise: Promise<FastifyInstance> | null = null;
+
+function getApp(): Promise<FastifyInstance> {
+  if (!appPromise) {
+    appPromise = buildApp().then(async (app) => {
+      await app.ready();
+      return app;
+    });
+  }
+  return appPromise;
+}
+
+// Default export for @vercel/node
+export default async function handler(req: IncomingMessage, res: ServerResponse): Promise<void> {
+  const app = await getApp();
+  app.server.emit('request', req, res);
+}
+
+// --- Local development server ---
 
 async function start(): Promise<void> {
   try {
-    // Connect to MongoDB
-    await connectToMongoDB({
-      uri: config.mongoUri,
-      dbName: config.mongoDbName,
-    });
-
-    // Build the application
     const app = await buildApp();
 
-    // Start the server
     await app.listen({
       port: config.port,
       host: config.host,
     });
 
     console.log(`🚀 Server running on http://${config.host}:${config.port}`);
-    console.log(`🏥 Health check: http://${config.host}:${config.port}/api/health`);
     console.log(`📚 API Documentation: http://${config.host}:${config.port}/docs`);
-    console.log(`👥 Users API: http://${config.host}:${config.port}/api/users`);
-    console.log(`🧾 Receipts API: http://${config.host}:${config.port}/api/receipts`);
-    console.log(`🔐 API Key required for all endpoints except /api/health`);
-
   } catch (error) {
     console.error('❌ Failed to start server:', error);
     process.exit(1);
@@ -236,10 +231,8 @@ async function start(): Promise<void> {
 // Handle graceful shutdown
 async function gracefulShutdown(signal: string): Promise<void> {
   console.log(`\n🔄 Received ${signal}, shutting down gracefully...`);
-  
   try {
-    await fastify.close();
-    await closeMongoDB();
+    await closeDb();
     console.log('✅ Server shutdown complete');
     process.exit(0);
   } catch (error) {
@@ -248,20 +241,10 @@ async function gracefulShutdown(signal: string): Promise<void> {
   }
 }
 
-// Register shutdown handlers
 process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
 
-// Handle uncaught exceptions
-process.on('uncaughtException', (error) => {
-  console.error('❌ Uncaught Exception:', error);
-  process.exit(1);
-});
-
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
-  process.exit(1);
-});
-
-// Start the server
-start().catch(console.error);
+// Only start the server when not running on Vercel
+if (!process.env['VERCEL']) {
+  start().catch(console.error);
+}

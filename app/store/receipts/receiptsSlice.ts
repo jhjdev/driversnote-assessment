@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { Receipt } from '../../types/types';
-import { mongodbService } from '../../services/mongodb.service';
+import { apiService } from '../../services/api.service';
 
 // Define Receipt interface if not in types
 export interface ReceiptData {
@@ -30,7 +30,7 @@ export const fetchReceipts = createAsyncThunk(
   'receipts/fetchReceipts',
   async(_, { rejectWithValue }) => {
     try {
-      const receipts = await mongodbService.getReceipts();
+      const receipts = await apiService.getReceipts();
       return receipts;
     } catch (error) {
       return rejectWithValue(
@@ -47,7 +47,7 @@ export const createReceipt = createAsyncThunk(
     { rejectWithValue },
   ) => {
     try {
-      const newReceipt = await mongodbService.createReceipt(receiptData);
+      const newReceipt = await apiService.createReceipt(receiptData);
       return newReceipt;
     } catch (error) {
       return rejectWithValue(
@@ -61,7 +61,7 @@ export const deleteReceipt = createAsyncThunk(
   'receipts/deleteReceipt',
   async(receiptId: string, { rejectWithValue }) => {
     try {
-      await mongodbService.deleteReceipt(receiptId);
+      await apiService.deleteReceipt(receiptId);
       return receiptId;
     } catch (error) {
       return rejectWithValue(

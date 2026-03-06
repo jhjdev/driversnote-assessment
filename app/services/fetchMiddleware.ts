@@ -1,5 +1,5 @@
 import { User } from '../types/types';
-import { mongodbService } from './mongodb.service';
+import { apiService } from './api.service';
 
 export class FetchMiddleware {
   private readonly COLLECTION_NAME = 'users';
@@ -9,9 +9,9 @@ export class FetchMiddleware {
    */
   async initializeUsers(): Promise<void> {
     try {
-      console.log('Initializing users in MongoDB...');
+      console.log('Initializing users in API...');
       // Try to initialize with sample data if collection is empty
-      await mongodbService.initializeUsers(SAMPLE_USERS);
+      await apiService.initializeUsers(SAMPLE_USERS);
     } catch (error) {
       console.warn(
         'Failed to initialize users, falling back to sample data:',
@@ -21,17 +21,17 @@ export class FetchMiddleware {
   }
 
   /**
-   * Fetch all users from MongoDB
+   * Fetch all users from API
    */
   async fetchAllUsers(): Promise<User[]> {
     try {
-      console.log('Fetching users from MongoDB...');
-      const users = await mongodbService.getUsers();
-      console.log('Successfully fetched', users.length, 'users from MongoDB');
+      console.log('Fetching users from API...');
+      const users = await apiService.getUsers();
+      console.log('Successfully fetched', users.length, 'users from API');
       return users;
     } catch (error) {
       console.warn(
-        'Failed to fetch users from MongoDB, using sample data:',
+        'Failed to fetch users from API, using sample data:',
         error,
       );
       return SAMPLE_USERS;
@@ -43,17 +43,17 @@ export class FetchMiddleware {
    */
   async fetchUserById(id: number): Promise<User | null> {
     try {
-      console.log(`Fetching user ${id} from MongoDB...`);
-      const user = await mongodbService.getUserById(id);
+      console.log(`Fetching user ${id} from API...`);
+      const user = await apiService.getUserById(id);
       if (user) {
-        console.log('Successfully fetched user from MongoDB:', user.full_name);
+        console.log('Successfully fetched user from API:', user.full_name);
         return user;
       } else {
-        console.log(`User ${id} not found in MongoDB, checking sample data...`);
+        console.log(`User ${id} not found in API, checking sample data...`);
       }
     } catch (error) {
       console.warn(
-        `Failed to fetch user ${id} from MongoDB, using sample data:`,
+        `Failed to fetch user ${id} from API, using sample data:`,
         error,
       );
     }
@@ -74,12 +74,12 @@ export class FetchMiddleware {
    */
   async createUser(userData: Omit<User, 'id'>): Promise<User> {
     try {
-      console.log('Creating user in MongoDB...', userData);
-      const newUser = await mongodbService.createUser(userData);
-      console.log('Successfully created user in MongoDB:', newUser);
+      console.log('Creating user in API...', userData);
+      const newUser = await apiService.createUser(userData);
+      console.log('Successfully created user in API:', newUser);
       return newUser;
     } catch (error) {
-      console.warn('Failed to create user in MongoDB:', error);
+      console.warn('Failed to create user in API:', error);
       throw error;
     }
   }
@@ -89,12 +89,12 @@ export class FetchMiddleware {
    */
   async updateUser(id: number, userData: Partial<User>): Promise<User> {
     try {
-      console.log(`Updating user ${id} in MongoDB...`, userData);
-      const updatedUser = await mongodbService.updateUser(id, userData);
-      console.log('Successfully updated user in MongoDB:', updatedUser);
+      console.log(`Updating user ${id} in API...`, userData);
+      const updatedUser = await apiService.updateUser(id, userData);
+      console.log('Successfully updated user in API:', updatedUser);
       return updatedUser;
     } catch (error) {
-      console.warn(`Failed to update user ${id} in MongoDB:`, error);
+      console.warn(`Failed to update user ${id} in API:`, error);
       throw error;
     }
   }
@@ -104,12 +104,12 @@ export class FetchMiddleware {
    */
   async deleteUser(id: number): Promise<boolean> {
     try {
-      console.log(`Deleting user ${id} from MongoDB...`);
-      const result = await mongodbService.deleteUser(id);
-      console.log(`Successfully deleted user ${id} from MongoDB:`, result);
+      console.log(`Deleting user ${id} from API...`);
+      const result = await apiService.deleteUser(id);
+      console.log(`Successfully deleted user ${id} from API:`, result);
       return result.success;
     } catch (error) {
-      console.warn(`Failed to delete user ${id} from MongoDB:`, error);
+      console.warn(`Failed to delete user ${id} from API:`, error);
       throw error;
     }
   }

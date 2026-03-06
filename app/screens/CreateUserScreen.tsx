@@ -244,7 +244,7 @@ export default function CreateUserScreen() {
               value={discount}
               onValueChange={setDiscount}
               step={5}
-              thumbColor={theme.colors.primary}
+              thumbTintColor={theme.colors.primary}
               minimumTrackTintColor={theme.colors.primary}
               maximumTrackTintColor={theme.colors.outline}
             />

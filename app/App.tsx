@@ -8,9 +8,9 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { ActivityIndicator, View, Platform } from 'react-native';
 
 // Import our custom components
-import { ThemeProvider, useAppTheme } from './app/context/ThemeContext';
-import TabNavigator from './app/navigation/TabNavigator';
-import { store, persistor } from './app/store/store';
+import { ThemeProvider, useAppTheme } from './context/ThemeContext';
+import TabNavigator from './navigation/TabNavigator';
+import { store, persistor } from './store/store';
 
 function AppContent(): React.JSX.Element {
   const { theme, isDarkMode } = useAppTheme();

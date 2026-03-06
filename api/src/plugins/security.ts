@@ -54,7 +54,7 @@ const securityPlugin: FastifyPluginAsync<SecurityPluginOptions> = async (
         ip: clientIP,
         userAgent: userAgent,
         statusCode: reply.statusCode,
-        responseTime: reply.getResponseTime()
+        responseTime: reply.elapsedTime
       }, 'Request processed');
     }
 

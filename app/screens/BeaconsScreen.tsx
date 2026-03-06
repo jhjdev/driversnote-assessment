@@ -116,7 +116,7 @@ const Beacons: React.FC<BeaconsScreenProps> = ({ route }) => {
             <Avatar.Text size={48} label={user?.full_name?.[0] || 'U'} style={userCardStyles.avatar} />
             <View style={userCardStyles.info}>
               <Title>{user?.full_name}</Title>
-              <Paragraph>{user?.email}</Paragraph>
+              <Paragraph>{user?.city ? `${user.city}, ${user.country_name || ''}` : user?.country_name || ''}</Paragraph>
               {userDiscountPercent > 0 && (
                 <Chip icon="tag" style={userCardStyles.discountChip} textStyle={userCardStyles.discountChipText}>
                   {userDiscountPercent}% Discount

@@ -1,4 +1,4 @@
-import { mongodbService } from '../services/mongodb.service';
+import { apiService } from './api.service';
 import { User } from '../types/types';
 
 export class UserService {
@@ -11,7 +11,7 @@ export class UserService {
       const users = await this.getAllUsers();
       if (users.length === 0) {
         // Initialize with sample users via API
-        await mongodbService.initializeUsers(SAMPLE_USERS);
+        await apiService.initializeUsers(SAMPLE_USERS);
         console.log('Sample users initialized via API');
       }
     } catch (error) {
@@ -25,7 +25,7 @@ export class UserService {
    */
   async getAllUsers(): Promise<User[]> {
     try {
-      return await mongodbService.getUsers();
+      return await apiService.getUsers();
     } catch (error) {
       console.error('Error getting users:', error);
       throw error;
@@ -37,7 +37,7 @@ export class UserService {
    */
   async getUserById(id: number): Promise<User | null> {
     try {
-      return await mongodbService.getUserById(id);
+      return await apiService.getUserById(id);
     } catch (error) {
       console.error(`Error getting user with ID ${id}:`, error);
       throw error;
@@ -49,7 +49,7 @@ export class UserService {
    */
   async createUser(user: Omit<User, 'id'>): Promise<User> {
     try {
-      return await mongodbService.createUser(user);
+      return await apiService.createUser(user);
     } catch (error) {
       console.error('Error creating user:', error);
       throw error;
@@ -61,7 +61,7 @@ export class UserService {
    */
   async updateUser(id: number, userData: Partial<User>): Promise<User | null> {
     try {
-      const updatedUser = await mongodbService.updateUser(id, userData);
+      const updatedUser = await apiService.updateUser(id, userData);
       return updatedUser;
     } catch (error) {
       console.error(`Error updating user with ID ${id}:`, error);
@@ -74,7 +74,7 @@ export class UserService {
    */
   async deleteUser(id: number): Promise<boolean> {
     try {
-      const result = await mongodbService.deleteUser(id);
+      const result = await apiService.deleteUser(id);
       return result.success;
     } catch (error) {
       console.error(`Error deleting user with ID ${id}:`, error);

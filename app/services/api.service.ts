@@ -1,17 +1,16 @@
 import { API_BASE_URL, API_KEY } from '@env';
 import { User, Receipt } from '../types/types';
 
-// API service for hosted database access
-class MongoDBService {
+// API service for backend access
+class ApiService {
   private apiEndpoint: string;
   private apiKey: string;
 
   constructor() {
-    // Use the hosted API endpoint
-    this.apiEndpoint = API_BASE_URL || 'https://driversnote-assessment-api.onrender.com/api';
+    this.apiEndpoint = API_BASE_URL || 'http://localhost:4000/api';
     this.apiKey = API_KEY || '';
 
-    console.log('MongoDB Service initialized with:', {
+    console.log('API Service initialized with:', {
       endpoint: this.apiEndpoint,
       hasApiKey: !!this.apiKey,
     });
@@ -32,7 +31,7 @@ class MongoDBService {
         );
         const headers: Record<string, string> = {
           'Content-Type': 'application/json',
-          ...options?.headers,
+          ...(options?.headers as Record<string, string>),
         };
 
         // Only add API key header if we have one
@@ -162,4 +161,4 @@ class MongoDBService {
 }
 
 // Export singleton instance
-export const mongodbService = new MongoDBService();
+export const apiService = new ApiService();
