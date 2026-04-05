@@ -1,19 +1,19 @@
 # Driversnote Assessment
 
-A monorepo containing a React Native Expo application and Fastify API for managing users, iBeacon orders, and receipts with MongoDB integration.
+A monorepo containing a React Native Expo application and Fastify API for managing users, iBeacon orders, and receipts with Turso (libSQL) database.
 
 ## 🎯 Overview
 
 This monorepo contains two workspaces:
 
-- **app/** - React Native mobile application
-- **api/** - Fastify backend API with MongoDB
+- **app/** - React Native mobile application (Expo SDK 55)
+- **api/** - Fastify backend API with Turso (libSQL)
 
 The application allows users to:
 
 - Manage user profiles and customer data
 - Place orders for iBeacon devices with delivery information
-- Generate and view receipts stored in MongoDB
+- Generate and view receipts stored in Turso
 - View statistics and manage application settings
 - Switch between light and dark themes
 
@@ -43,11 +43,12 @@ driversnote-assessment/
 
 - ✅ Complete user management system
 - ✅ Full order flow with iBeacon selection and delivery
-- ✅ Receipt generation and MongoDB storage
+- ✅ Receipt generation and Turso database storage
 - ✅ Material Design 3 theming with dark/light mode
 - ✅ Navigation flow fixes and proper stack management
 - ✅ TypeScript strict configuration
-- ✅ Fastify API backend with MongoDB integration
+- ✅ Fastify API backend with Turso (libSQL) integration
+- ✅ Expo SDK 55 with React Native 0.83 and React 19.2
 - ✅ Redux Toolkit state management
 - ✅ Consistent safe area handling across Android/iOS
 - ✅ Centralized and consistent style system
@@ -58,17 +59,29 @@ driversnote-assessment/
 
 ## 🛠 Tech Stack
 
-- **Frontend**: React Native with Expo (bare workflow)
-- **Navigation**: React Navigation v6 with nested stack/tab navigators
+- **Frontend**: React Native with Expo SDK 55 (bare workflow)
+- **Navigation**: React Navigation v7 with nested stack/tab navigators
 - **State Management**: Redux Toolkit with Redux Persist
-- **API**: Fastify 5.2.2 with MongoDB 6.12.0
+- **API**: Fastify with Turso (libSQL) database
 - **Deployment**: Vercel (serverless)
+- **Database**: Turso (libSQL)
 - **UI Framework**: React Native Paper (Material Design 3)
 - **Language**: TypeScript (strict configuration)
 - **Development**: Expo CLI, Metro bundler
 - **Monorepo**: npm workspaces
 
 ## 📱 Features
+
+### Expo SDK 55 Highlights
+
+The app runs on Expo SDK 55 (React Native 0.83, React 19.2), which includes:
+
+- **New Architecture only** — Legacy Architecture support has been dropped; the New Architecture is now the default
+- **Dynamic Colors API** — Material 3 Dynamic Colors on Android that adapt to the user's wallpaper, and adaptive platform colors on iOS
+- **Improved expo-blur** — efficient background blurs on Android 12+ via the RenderNode API
+- **Apple Zoom transitions** — native gesture-driven shared element transitions on iOS, enabled by default
+- **Hermes v1 (opt-in)** — new compiler with meaningful performance improvements (may increase build time)
+- **Expo UI improvements** — Markdown in Text components, SwiftUI/Jetpack Compose parity, and extensible custom components
 
 ### User Interface
 
@@ -79,7 +92,7 @@ driversnote-assessment/
 
 ### User Management
 
-- View existing users from MongoDB
+- View existing users from Turso database
 - Create new users with comprehensive form validation
 - Country selection with discount calculations
 - Tag management for customer categorization
@@ -94,7 +107,7 @@ driversnote-assessment/
 ### Receipt System
 
 - Automatic receipt generation after order completion
-- Receipt storage in MongoDB with proper indexing
+- Receipt storage in Turso with proper indexing
 - Receipt listing with detailed information
 - Integration with order completion flow
 
@@ -112,7 +125,8 @@ driversnote-assessment/
 - npm >= 9.0.0
 - iOS Simulator (for macOS) or Android Emulator
 - Expo CLI (`npm install -g @expo/cli`)
-- MongoDB instance (hosted or local)
+- Turso CLI (`brew install tursodatabase/tap/turso` on macOS)
+- Vercel CLI (`npm install -g vercel`)
 
 ### Installation
 
@@ -126,7 +140,8 @@ npm install
 #### API (.env file in /api directory)
 
 ```env
-MONGODB_URI=your-mongodb-connection-string
+TURSO_DATABASE_URL=libsql://your-db-name.turso.io
+TURSO_AUTH_TOKEN=your-turso-auth-token
 NODE_ENV=development
 PORT=3000
 API_KEY=your-api-key-here
@@ -221,10 +236,9 @@ TabNavigator
 
 ## 🌐 API Endpoints
 
-The app connects to a hosted API service on Render.com:
+The API is deployed on Vercel:
 
-**Base URL**: `https://driversnote-assessment-api.onrender.com/api`  
-**API Repository**: [driversnote-assessment-api](https://github.com/jhjdev/driversnote-assessment-api)
+**Base URL**: `https://driversnote-assessment.vercel.app/api`
 
 **Public Endpoints** (no authentication required):
 
@@ -245,7 +259,7 @@ The app connects to a hosted API service on Render.com:
 
 **Authentication**: All data endpoints require a valid API key sent in the `X-API-Key` header.
 
-**Documentation**: Available at `https://driversnote-assessment-api.onrender.com/docs`
+**Documentation**: Available at `https://driversnote-assessment.vercel.app/docs`
 
 ## 🔒 Security
 
@@ -317,6 +331,84 @@ The application includes a fix for navigation stack issues where the order flow 
 - Dynamic light/dark mode switching
 - Persistent theme preference
 
+## ☁️ Deploying the API to Vercel
+
+The API is deployed as a serverless function on Vercel, using Turso as the database.
+
+### 1. Set Up Turso
+
+Install the Turso CLI and authenticate:
+
+```bash
+# Install (macOS)
+brew install tursodatabase/tap/turso
+
+# Log in (opens browser)
+turso auth login
+```
+
+Create a database:
+
+```bash
+turso db create driversnote-assessment
+```
+
+Retrieve the database URL and create an auth token:
+
+```bash
+# Get the database URL
+turso db show driversnote-assessment --url
+
+# Create an auth token
+turso db tokens create driversnote-assessment
+```
+
+### 2. Set Up Vercel
+
+Install the Vercel CLI and log in:
+
+```bash
+npm install -g vercel
+vercel login
+```
+
+Link the project (from the repo root):
+
+```bash
+vercel link
+```
+
+### 3. Configure Environment Variables
+
+Add the Turso credentials to Vercel. Use `printf` (not `echo`) to avoid trailing newlines:
+
+```bash
+printf 'libsql://your-db-url.turso.io' | vercel env add TURSO_DATABASE_URL production
+turso db tokens create driversnote-assessment | tr -d '\n' | vercel env add TURSO_AUTH_TOKEN production
+```
+
+Also add any other required env vars (e.g. `API_KEY`):
+
+```bash
+printf 'your-api-key' | vercel env add API_KEY production
+```
+
+### 4. Deploy
+
+```bash
+vercel --prod
+```
+
+The API will be available at `https://driversnote-assessment.vercel.app`.
+
+### Redeployment
+
+After making changes, simply run `vercel --prod` again from the repo root. Environment variables persist across deployments.
+
+### Vercel Configuration
+
+The deployment is configured in `api/vercel.json`. All routes are directed to the Fastify entry point (`src/index.ts`), which runs as a single serverless function.
+
 ## 🛠 Development
 
 ### Build for Production
@@ -348,8 +440,13 @@ npm test
    ```
 
 3. **Environment variables not loading:**
-   - Ensure `.env` file is in the root directory
+   - Ensure `.env` file is in the correct directory
    - Restart the development server
+
+4. **Vercel deployment errors:**
+   - Check env vars are set: `vercel env ls`
+   - Inspect logs: `vercel logs <deployment-url>`
+   - Ensure no trailing newlines in env var values
 
 ## 📄 License
 
