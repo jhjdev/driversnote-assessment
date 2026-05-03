@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
-import { View, StyleSheet, ScrollView, SafeAreaView, Platform } from 'react-native';
+import { View, StyleSheet, ScrollView, Platform } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, Card, ProgressBar, useTheme, Divider, ActivityIndicator } from 'react-native-paper';
 import { commonStyles, createThemedStyles } from '../styles';
 import { useDispatch, useSelector } from 'react-redux';

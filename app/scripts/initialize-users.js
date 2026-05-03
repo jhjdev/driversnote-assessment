@@ -1,8 +1,7 @@
-const fetch = require('node-fetch');
 const fs = require('fs');
 const path = require('path');
 
-const API_BASE_URL = process.env.API_BASE_URL || 'https://driversnote-assessment-api.onrender.com/api';
+const API_BASE_URL = process.env.API_BASE_URL || 'https://driversnote-assessment.vercel.app/api';
 const API_KEY = process.env.API_KEY || 'your-api-key-here';
 
 if (!process.env.API_KEY) {
@@ -13,23 +12,23 @@ if (!process.env.API_KEY) {
 
 async function initializeUsers() {
   try {
-    console.log('🚀 Initializing MongoDB with complete user data...\n');
+    console.log('🚀 Initializing Turso with complete user data...\n');
 
     // Read users data from JSON file
-    const usersJsonPath = path.join(__dirname, '..', 'app', 'data', 'users.json');
+    const usersJsonPath = path.join(__dirname, '..', 'data', 'users.json');
     const usersData = JSON.parse(fs.readFileSync(usersJsonPath, 'utf8'));
 
     console.log(`📋 Found ${usersData.length} users in users.json`);
 
     // First, let's check what's currently in the database
-    console.log('\n1. Checking current users in MongoDB...');
+    console.log('\n1. Checking current users in Turso...');
     const currentUsersResponse = await fetch(`${API_BASE_URL}/users`, {
       headers: {
         'X-API-Key': API_KEY,
       },
     });
     const currentUsers = await currentUsersResponse.json();
-    console.log(`📊 Currently ${currentUsers.length} users in MongoDB:`);
+    console.log(`📊 Currently ${currentUsers.length} users in Turso:`);
     currentUsers.forEach(user => {
       console.log(`   - ${user.full_name} (ID: ${user.id})`);
     });
@@ -115,7 +114,7 @@ async function initializeUsers() {
     const finalUsers = await finalUsersResponse.json();
 
     console.log('\n🎉 Initialization completed!');
-    console.log(`📊 Final state: ${finalUsers.length} users in MongoDB`);
+    console.log(`📊 Final state: ${finalUsers.length} users in Turso`);
 
     // Show a sample user to verify the data structure
     if (finalUsers.length > 0) {

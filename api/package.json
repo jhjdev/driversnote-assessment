@@ -1,7 +1,7 @@
 {
   "name": "@driversnote/api",
   "version": "1.0.0",
-  "description": "Fastify API service for Driversnote assessment with MongoDB",
+  "description": "Fastify API service for Driversnote assessment, backed by Turso (libSQL).",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
@@ -21,7 +21,8 @@
   },
   "keywords": [
     "fastify",
-    "mongodb",
+    "turso",
+    "libsql",
     "api",
     "typescript",
     "swagger"

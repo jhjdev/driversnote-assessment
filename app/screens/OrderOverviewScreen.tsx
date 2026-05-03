@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, ScrollView, Alert, SafeAreaView, StyleSheet, Platform } from 'react-native';
+import { View, ScrollView, Alert, StyleSheet, Platform } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, Card, Button, useTheme, Divider } from 'react-native-paper';
 import { useNavigation, RouteProp, CommonActions } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
@@ -21,7 +22,7 @@ export default function OrderOverviewScreen({ route }: OrderOverviewScreenProps)
 
   const handleConfirmOrder = async() => {
     try {
-      // Create receipt data in MongoDB format
+      // Build receipt payload for the API
       const receiptData = {
         userId,
         userName: deliveryAddress.name,

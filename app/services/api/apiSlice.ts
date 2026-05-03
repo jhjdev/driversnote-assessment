@@ -16,7 +16,7 @@ export const apiSlice = createApi({
       queryFn: async(_, { dispatch: _dispatch }) => {
         try {
           // We're using our existing middleware for now, but this could be replaced
-          // with direct MongoDB calls or other API calls in the future
+          // with direct Turso calls or other API calls in the future
           const users = await fetchMiddleware.fetchAllUsers();
           return { data: users };
         } catch {

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, SafeAreaView, Platform } from 'react-native';
+import { View, StyleSheet, ScrollView, Platform } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, TextInput, Button, Card, useTheme } from 'react-native-paper';
 import { useNavigation, RouteProp } from '@react-navigation/native';
 import { useSelector } from 'react-redux';

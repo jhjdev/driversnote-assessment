@@ -76,7 +76,7 @@ class ApiService {
   }
 
   /**
-   * Get all users from MongoDB
+   * Get all users
    */
   async getUsers(): Promise<User[]> {
     return this.makeRequest<User[]>('/users');
@@ -134,7 +134,7 @@ class ApiService {
   }
 
   /**
-   * Get all receipts from MongoDB
+   * Get all receipts
    */
   async getReceipts(): Promise<Receipt[]> {
     return this.makeRequest<Receipt[]>('/receipts');

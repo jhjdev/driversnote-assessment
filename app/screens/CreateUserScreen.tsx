@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, ScrollView, Alert, SafeAreaView, Platform } from 'react-native';
+import { View, ScrollView, Alert, Platform } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Slider from '@react-native-community/slider';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';

@@ -13,7 +13,7 @@ export interface SwaggerConfig {
 
 export const defaultSwaggerConfig: SwaggerConfig = {
   title: 'Driversnote Assessment API',
-  description: 'API service for Driversnote assessment with MongoDB',
+  description: 'API service for Driversnote assessment, backed by Turso (libSQL).',
   version: '1.0.0',
   host: 'localhost:4000',
   schemes: ['http', 'https'],

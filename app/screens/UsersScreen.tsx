@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, TouchableOpacity, Alert, SafeAreaView, Platform } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Alert, Platform } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, Card, List, IconButton, ActivityIndicator, Dialog, TextInput, Button, Portal, Snackbar, useTheme, Chip } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';

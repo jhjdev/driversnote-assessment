@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, Alert, SafeAreaView, Platform } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert, Platform } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, Card, List, Chip, useTheme, IconButton, ActivityIndicator } from 'react-native-paper';
 import { commonStyles, createThemedStyles, textStyles } from '../styles';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,7 +15,7 @@ export default function ReceiptsScreen() {
   const themedStyles = createThemedStyles(theme);
 
   useEffect(() => {
-    // First try to fetch from MongoDB
+    // First try to fetch from the API
     dispatch(fetchReceipts());
   }, [dispatch]);
 
