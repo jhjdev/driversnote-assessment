@@ -3,7 +3,6 @@ import userReducer, {
   clearSelectedUser,
   setSelectedUser,
   fetchUsers,
-  fetchUserById,
   createUser,
   updateUser,
   deleteUser,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, TouchableOpacity, Alert, Platform } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, Card, List, IconButton, ActivityIndicator, Dialog, TextInput, Button, Portal, Snackbar, useTheme, Chip } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -9,11 +9,14 @@ import { fetchUsers, updateUser, deleteUser, setSelectedUser } from '../store/us
 import { User } from '../types/types';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { commonStyles, userCardStyles, textStyles, createThemedStyles } from '../styles';
+
+type UsersNavigationProp = StackNavigationProp<{ Beacons: { userId: number } }, 'Beacons'>;
+
 export default function UsersScreen() {
   const theme = useTheme();
   const themedStyles = createThemedStyles(theme);
   const dispatch = useDispatch<AppDispatch>();
-  const navigation = useNavigation();
+  const navigation = useNavigation<UsersNavigationProp>();
   const { users, loading, error } = useSelector((state: RootState) => state.user);
   const [snackbarVisible, setSnackbarVisible] = React.useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
@@ -38,7 +41,7 @@ export default function UsersScreen() {
   const handleUserPress = (user: User) => {
     dispatch(setSelectedUser(user));
     // Navigate to beacon selection screen
-    (navigation as any).navigate('Beacons', { userId: user.id });
+    navigation.navigate('Beacons', { userId: user.id });
   };
 
   const handleEditUser = (user: User) => {

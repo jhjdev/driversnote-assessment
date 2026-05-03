@@ -63,7 +63,6 @@ async function initializeUsers() {
         });
 
         if (updateResponse.ok) {
-          const updatedUser = await updateResponse.json();
           console.log('   ✅ Updated successfully');
         } else {
           console.log(`   ❌ Failed to update: ${updateResponse.status}`);

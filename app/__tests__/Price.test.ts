@@ -3,7 +3,6 @@ import {
   calculatePrice,
   formatPrice,
   MIN_BEACONS_FOR_DISCOUNT,
-  DISCOUNT_PERCENT,
 } from '../data/Price';
 
 describe('getTotalPrice', () => {

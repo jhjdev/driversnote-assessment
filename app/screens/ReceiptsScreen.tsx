@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, Alert, Platform } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, StyleSheet, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, Card, List, Chip, useTheme, IconButton, ActivityIndicator } from 'react-native-paper';
 import { commonStyles, createThemedStyles, textStyles } from '../styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
-import { fetchReceipts, deleteReceipt, addMockReceipts } from '../store/receipts/receiptsSlice';
+import { fetchReceipts, deleteReceipt } from '../store/receipts/receiptsSlice';
 import { formatPrice } from '../data/Price';
 
 export default function ReceiptsScreen() {
   const theme = useTheme();
   const dispatch = useDispatch<AppDispatch>();
-  const { receipts, loading, error } = useSelector((state: RootState) => state.receipts);
+  const { receipts, loading } = useSelector((state: RootState) => state.receipts);
   const themedStyles = createThemedStyles(theme);
 
   useEffect(() => {

@@ -6,13 +6,14 @@ import { useNavigation, RouteProp } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { Order } from '../types/types';
 
 interface DeliveryScreenProps {
-  route: RouteProp<{ params: { order: any; userId: number } }, 'params'>;
+  route: RouteProp<{ params: { order: Order; userId: number } }, 'params'>;
 }
 
 type DeliveryNavigationProp = StackNavigationProp<
-  { OrderOverview: { order: any; userId: number } },
+  { OrderOverview: { order: Order; userId: number } },
   'OrderOverview'
 >;
 

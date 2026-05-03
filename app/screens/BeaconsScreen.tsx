@@ -13,21 +13,20 @@ import {
   ActivityIndicator,
   Divider,
   Surface,
-  useTheme,
   Avatar,
   Chip,
 } from 'react-native-paper';
 import { RootState } from '../store/store';
 import { calculatePrice, formatPrice } from '../data/Price';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { useAppTheme } from '../context/ThemeContext';
-import { commonStyles, counterStyles, priceStyles, userCardStyles, errorStyles, textStyles, createThemedStyles } from '../styles';
+import { Order } from '../types/types';
+import { commonStyles, counterStyles, priceStyles, userCardStyles, errorStyles } from '../styles';
 
 interface BeaconsScreenProps {
   route: RouteProp<{ params: { userId: number } }, 'params'>;
 }
 
-type BeaconsNavigationProp = StackNavigationProp<{ Delivery: { order: any; userId: number } }, 'Delivery'>;
+type BeaconsNavigationProp = StackNavigationProp<{ Delivery: { order: Order; userId: number } }, 'Delivery'>;
 
 const Beacons: React.FC<BeaconsScreenProps> = ({ route }) => {
   const [beaconCount, setBeaconCount] = useState<number>(1);

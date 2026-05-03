@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, Linking, Platform } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, Card, List, Switch, useTheme, Divider } from 'react-native-paper';
 import { commonStyles, createThemedStyles } from '../styles';

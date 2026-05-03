@@ -8,9 +8,10 @@ import { AppDispatch } from '../store/store';
 import { createReceipt } from '../store/receipts/receiptsSlice';
 import { formatPrice } from '../data/Price';
 import { commonStyles } from '../styles';
+import { Order } from '../types/types';
 
 interface OrderOverviewScreenProps {
-  route: RouteProp<{ params: { order: any; userId: number } }, 'params'>;
+  route: RouteProp<{ params: { order: Order; userId: number } }, 'params'>;
 }
 
 export default function OrderOverviewScreen({ route }: OrderOverviewScreenProps) {
@@ -64,7 +65,7 @@ export default function OrderOverviewScreen({ route }: OrderOverviewScreenProps)
           },
         ],
       );
-    } catch (error) {
+    } catch {
       Alert.alert('Error', 'Failed to create receipt. Please try again.');
     }
   };

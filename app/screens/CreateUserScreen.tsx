@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, ScrollView, Alert, Platform } from 'react-native';
+import { View, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Slider from '@react-native-community/slider';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import {
   Text,
@@ -12,9 +12,8 @@ import {
   useTheme,
   Chip,
   HelperText,
-  ActivityIndicator,
 } from 'react-native-paper';
-import { RootState, AppDispatch } from '../store/store';
+import { AppDispatch } from '../store/store';
 import { createUser } from '../store/user/userSlice';
 import { User } from '../types/types';
 import { commonStyles, formStyles, createThemedStyles } from '../styles';
@@ -23,7 +22,6 @@ export default function CreateUserScreen() {
   const theme = useTheme();
   const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation();
-  const { loading } = useSelector((state: RootState) => state.user);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -38,7 +36,6 @@ export default function CreateUserScreen() {
   const [emailError, setEmailError] = useState('');
 
   const discountTags = ['VIP', 'Student', 'Senior', 'Employee', 'First Time', 'Loyalty'];
-  const countries = ['USA', 'Canada', 'Australia', 'Denmark', 'UK', 'Germany'];
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -123,7 +120,7 @@ export default function CreateUserScreen() {
           },
         ],
       );
-    } catch (error) {
+    } catch {
       Alert.alert('Error', 'Failed to create user. Please try again.');
     }
   };
