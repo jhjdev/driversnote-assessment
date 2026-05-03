@@ -28,6 +28,6 @@ module.exports = {
     '^@/(.*)$': '<rootDir>/app/$1'
   },
   transformIgnorePatterns: [
-    'node_modules/(?!(jest-)?react-native|@react-native|@testing-library|@react-navigation|react-redux|@reduxjs/toolkit|react-native-paper|react-native-vector-icons|react-native-dotenv|expo|expo-.*|@expo/.*)'
+    'node_modules/(?!(jest-)?react-native|@react-native|@testing-library|@react-navigation|react-redux|@reduxjs/toolkit|immer|react-native-paper|react-native-vector-icons|react-native-dotenv|expo|expo-.*|@expo/.*)'
   ]
 };

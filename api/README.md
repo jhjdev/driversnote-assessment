@@ -1,6 +1,6 @@
 # Driversnote Assessment API
 
-A secure, fully-featured REST API service built with Fastify, TypeScript, and MongoDB for the Driversnote assessment project.
+A secure, fully-featured REST API service built with Fastify, TypeScript, and Turso (libSQL) for the Driversnote assessment project.
 
 ## 🚀 Features
 
@@ -28,7 +28,7 @@ A secure, fully-featured REST API service built with Fastify, TypeScript, and Mo
 
 - Node.js ≥ 22.0.0
 - npm ≥ 10.0.0
-- MongoDB Atlas account or local MongoDB instance
+- Turso account (or a local libSQL/SQLite file for development)
 
 ### Installation
 
@@ -56,9 +56,9 @@ PORT=4000
 HOST=0.0.0.0
 API_KEY=your-secure-api-key-here
 
-# MongoDB Configuration
-MONGODB_URI=your-mongodb-connection-string
-MONGODB_DB_NAME=driversnote
+# Turso Configuration
+TURSO_DATABASE_URL=libsql://your-database.turso.io
+TURSO_AUTH_TOKEN=your-turso-auth-token
 
 # Security Configuration
 CORS_ORIGIN=http://localhost:3000
@@ -403,9 +403,9 @@ PORT=4000
 HOST=0.0.0.0
 API_KEY=your-secure-api-key-here
 
-# MongoDB Configuration
-MONGODB_URI=your-mongodb-connection-string
-MONGODB_DB_NAME=driversnote
+# Turso Configuration
+TURSO_DATABASE_URL=libsql://your-database.turso.io
+TURSO_AUTH_TOKEN=your-turso-auth-token
 
 # Security Configuration
 CORS_ORIGIN=http://localhost:3000
@@ -425,8 +425,8 @@ PORT=4000
 HOST=0.0.0.0
 API_KEY=your-32-char-production-api-key-here
 
-MONGODB_URI=your-mongodb-connection-string
-MONGODB_DB_NAME=your_production_database
+TURSO_DATABASE_URL=libsql://your-production-database.turso.io
+TURSO_AUTH_TOKEN=your-production-turso-auth-token
 
 CORS_ORIGIN=https://your-frontend-domain.com
 RATE_LIMIT_MAX=50
@@ -478,12 +478,12 @@ src/
 │   ├── index.ts       # TypeScript interfaces and schemas
 │   └── swagger.ts     # Swagger configuration types
 └── utils/
-    └── mongodb.ts     # MongoDB connection utilities
+    ├── db.ts         # Turso/libSQL client + lifecycle helpers
+    └── schema.ts     # Schema initialization (CREATE TABLE …)
 
 tests/
 ├── helpers/
-│   ├── testApp.ts     # Test application factory
-│   └── mockDatabase.ts # Database mocking utilities
+│   └── testApp.ts     # Test application factory (in-memory libSQL)
 ├── setup.ts           # Test environment setup
 └── unit/
     ├── auth.test.ts   # Authentication tests
@@ -540,7 +540,7 @@ npm run test:coverage
 - **Unit Tests**: Test individual route handlers and business logic
 - **Integration Tests**: Test full request/response cycles
 - **Security Tests**: Verify authentication and authorization
-- **Mock Database**: Tests run against mocked MongoDB for speed and isolation
+- **In-memory libSQL**: Tests run against an in-memory libSQL database for speed and isolation
 
 ### Test Coverage
 
@@ -563,7 +563,7 @@ Current test coverage includes:
 - [ ] Set `NODE_ENV=production`
 
 #### Infrastructure
-- [ ] Configure MongoDB Atlas with proper networking
+- [ ] Configure Turso database with the correct auth token and access controls
 - [ ] Set up SSL/TLS certificates
 - [ ] Configure reverse proxy (nginx/CloudFlare)
 - [ ] Set up monitoring and logging
@@ -578,13 +578,13 @@ Current test coverage includes:
 ### Environment-Specific Considerations
 
 #### Development
-- Use local MongoDB or MongoDB Atlas free tier
+- Use a local SQLite file or a Turso development database
 - Enable debug logging
 - Use relaxed rate limits
 
 #### Staging
 - Mirror production security settings
-- Use separate MongoDB database
+- Use a separate Turso database
 - Test with production-like data
 
 #### Production
@@ -604,7 +604,7 @@ If you detect unauthorized access:
 
 2. **Investigation**:
    - Check application logs for suspicious activity
-   - Review MongoDB access logs
+   - Review Turso access logs
    - Analyze traffic patterns
 
 3. **Recovery**:
@@ -667,4 +667,4 @@ ISC License - see LICENSE file for details.
 
 ---
 
-Built with ❤️ using [Fastify](https://fastify.io/), [TypeScript](https://www.typescriptlang.org/), and [MongoDB](https://www.mongodb.com/)
+Built with ❤️ using [Fastify](https://fastify.io/), [TypeScript](https://www.typescriptlang.org/), and [Turso](https://turso.tech/)

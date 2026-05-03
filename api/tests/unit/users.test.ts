@@ -59,7 +59,7 @@ describe('Users Routes', () => {
       expect(response.statusCode).toBe(401);
     });
 
-    it('should validate MongoDB ObjectId format', async () => {
+    it('should validate user ID format', async () => {
       const response = await app.inject({
         method: 'GET',
         url: '/api/users/invalid-id',

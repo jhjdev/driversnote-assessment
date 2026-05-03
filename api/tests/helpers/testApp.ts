@@ -3,25 +3,25 @@ import Fastify from 'fastify';
 import authPlugin from '../../src/plugins/auth';
 import usersRoutes from '../../src/routes/users';
 import receiptsRoutes from '../../src/routes/receipts';
+import { initializeDb, closeDb } from '../../src/utils/db';
 
 export async function buildTestApp(): Promise<FastifyInstance> {
-  // Set test API key if not already set
   if (!process.env.API_KEY) {
     process.env.API_KEY = 'test-api-key-12345';
   }
-  
+
+  // Fresh in-memory DB per test
+  await closeDb();
+  await initializeDb();
+
   const fastify = Fastify({
-    logger: false, // Disable logging in tests
+    logger: false,
   });
 
-  // Register plugins
   await fastify.register(authPlugin);
-  
-  // Register routes
   await fastify.register(usersRoutes, { prefix: '/api' });
   await fastify.register(receiptsRoutes, { prefix: '/api' });
 
-  // Health check endpoint
   fastify.get('/api/health', async () => ({
     status: 'ok',
     timestamp: new Date().toISOString(),
@@ -40,4 +40,5 @@ export function getAuthHeaders(): Record<string, string> {
 
 export async function closeTestApp(app: FastifyInstance): Promise<void> {
   await app.close();
+  await closeDb();
 }
