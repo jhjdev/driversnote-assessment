@@ -17,5 +17,8 @@
     "lint": "npm run lint --workspaces",
     "lint:fix": "npm run lint:fix --workspaces"
   },
-  "description": "Driversnote assessment monorepo containing React Native app and Fastify API"
+  "description": "Driversnote assessment monorepo containing React Native app and Fastify API",
+  "overrides": {
+    "react-native-worklets": "0.7.4"
+  }
 }
