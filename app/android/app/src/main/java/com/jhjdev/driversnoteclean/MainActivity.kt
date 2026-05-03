@@ -1,4 +1,4 @@
-package com.driversnote.app
+package com.jhjdev.driversnoteclean
 
 import android.os.Build
 import android.os.Bundle
